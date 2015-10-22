@@ -178,8 +178,8 @@ public class Cat extends Model {
 		def.collideConnected = true;
 		def.correctionFactor = 0.5f;
 		def.linearOffset.set(x * WORLD_TO_BOX, y * WORLD_TO_BOX);
-		def.maxForce = 100;
-		def.maxTorque = 100;
+		def.maxForce = 10;
+		def.maxTorque = 10;
 		def.type = JointType.MotorJoint;
 
 		// WeldJointDef def = new WeldJointDef();
