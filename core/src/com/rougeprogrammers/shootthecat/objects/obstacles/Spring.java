@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -76,10 +77,11 @@ public class Spring extends Obstacle {
 	 * rougeprogrammers.shootthecat.objects.Cat)
 	 */
 	@Override
-	public void action(final Cat cat) {
+	public void action(Cat cat) {
 		body.setActive(false);
 		sound.setVolume(sound.play(), 0.1f);
-		cat.shoot(Constants.SPRING_FORCE);
+		// cat.shoot(Constants.SPRING_FORCE);
+		cat.shoot(new Vector2(cat.getVelocityX() * 10, Math.abs(cat.getVelocityY() * 100)));
 		Gdx.app.log(TAG, "acted");
 	}
 

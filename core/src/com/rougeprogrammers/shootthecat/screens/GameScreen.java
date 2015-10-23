@@ -17,6 +17,8 @@ public class GameScreen extends ScreenAdapter {
 	/** The game stage. */
 	private GameStage gameStage;
 
+	private boolean running;
+
 	/**
 	 * Instantiates a new game screen.
 	 */
@@ -31,7 +33,8 @@ public class GameScreen extends ScreenAdapter {
 	 */
 	@Override
 	public void show() {
-		gameStage = new GameStage();
+		gameStage = new GameStage(this);
+		running = true;
 		Gdx.app.log(TAG, "started");
 	}
 
@@ -44,7 +47,19 @@ public class GameScreen extends ScreenAdapter {
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		gameStage.draw();
-		gameStage.act(delta);
+		if (running) {
+			gameStage.act(delta);
+		}
+	}
+
+	@Override
+	public void pause() {
+		running = false;
+	}
+
+	@Override
+	public void resume() {
+		running = true;
 	}
 
 	/*

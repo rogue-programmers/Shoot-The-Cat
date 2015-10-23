@@ -60,7 +60,7 @@ public class Constants {
 	public static final float CAT_WIDTH = 100;
 
 	/** The Constant CAT_HEIGHT. */
-	public static final float CAT_HEIGHT = CAT_WIDTH * 268 / 300;
+	public static final float CAT_HEIGHT = 90;
 
 	/** The Constant CAT_X. */
 	public static final float CAT_X = 340;
@@ -69,13 +69,13 @@ public class Constants {
 	public static final float CAT_Y = 200;
 
 	/** The Constant CAT_DENSITY. */
-	public static final float CAT_DENSITY = 0.8f;
+	public static final float CAT_DENSITY = 0.5f;
 
 	/** The Constant CAT_FRICTION. */
 	public static final float CAT_FRICTION = 0.1f;
 
 	/** The Constant CAT_RESTITUTION. */
-	public static final float CAT_RESTITUTION = 0.2f;
+	public static final float CAT_RESTITUTION = 0.6f;
 
 	/** The Constant MIN_OUCH_SPEED. */
 	public static final float CAT_OUCH_SPEED = -2;
@@ -126,6 +126,6 @@ public class Constants {
 	public static final float SPRING_Y = GROUND_Y + (GROUND_HEIGHT + SPRING_HEIGHT) / 2;
 
 	/** The Constant SPRING_FORCE. */
-	public static final Vector2 SPRING_FORCE = new Vector2(120, 200);
+	public static final Vector2 SPRING_FORCE = new Vector2(80, 200);
 
 }

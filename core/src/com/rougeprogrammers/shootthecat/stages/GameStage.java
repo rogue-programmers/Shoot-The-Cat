@@ -56,6 +56,7 @@ import com.rougeprogrammers.shootthecat.objects.models.Obstacle;
 import com.rougeprogrammers.shootthecat.objects.obstacles.Spring;
 import com.rougeprogrammers.shootthecat.objects.obstacles.TNT;
 import com.rougeprogrammers.shootthecat.objects.obstacles.Thorn;
+import com.rougeprogrammers.shootthecat.screens.GameScreen;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -105,11 +106,16 @@ public class GameStage extends Stage implements ContactListener {
 	/** The game started. */
 	public boolean gameStarted;
 
+	private GameScreen gameScreen;
+
+	private boolean flag = true;
+
 	/**
 	 * Instantiates a new game stage.
 	 */
-	public GameStage() {
+	public GameStage(GameScreen gameScreen) {
 		super(new ScalingViewport(Scaling.stretch, WIDTH, HEIGHT, new OrthographicCamera(WIDTH, HEIGHT)));
+		this.gameScreen = gameScreen;
 		camera = (OrthographicCamera) getCamera();
 		world = new World(GRAVITY, true);
 		world.setContactListener(this);
@@ -159,7 +165,7 @@ public class GameStage extends Stage implements ContactListener {
 			if (cat.getRestitution() == 0) {
 				cat.setRestitution(CAT_RESTITUTION);
 			}
-			cat.shoot(new Vector2(10, 30));
+			cat.shoot(new Vector2(30, 100));
 		}
 		return true;
 	}
@@ -201,6 +207,14 @@ public class GameStage extends Stage implements ContactListener {
 		case Keys.DOWN:
 		case Keys.VOLUME_DOWN:
 			camera.zoom++;
+			break;
+		case Keys.ESCAPE:
+			if (flag) {
+				gameScreen.pause();
+			} else {
+				gameScreen.resume();
+			}
+			flag = !flag;
 			break;
 		default:
 			break;
