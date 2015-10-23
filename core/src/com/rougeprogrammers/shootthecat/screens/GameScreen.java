@@ -16,9 +16,8 @@ public class GameScreen extends ScreenAdapter {
 
 	/** The game stage. */
 	private GameStage gameStage;
-	
-	private int i;
 
+	/** The running. */
 	private boolean running;
 
 	/**
@@ -54,11 +53,21 @@ public class GameScreen extends ScreenAdapter {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.ScreenAdapter#pause()
+	 */
 	@Override
 	public void pause() {
 		running = false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.ScreenAdapter#resume()
+	 */
 	@Override
 	public void resume() {
 		running = true;
