@@ -16,6 +16,8 @@ public class GameScreen extends ScreenAdapter {
 
 	/** The game stage. */
 	private GameStage gameStage;
+	
+	private int i;
 
 	private boolean running;
 
