@@ -24,6 +24,7 @@ public class GameScreen extends ScreenAdapter {
 	 * Instantiates a new game screen.
 	 */
 	public GameScreen() {
+		
 		Gdx.app.log(TAG, "created");
 	}
 
