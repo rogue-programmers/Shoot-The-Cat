@@ -371,7 +371,7 @@ public class GameStage extends Stage implements ContactListener {
 			cannon.draw(getBatch(), delta);
 			getBatch().end();
 		}
-		debugRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
+//		debugRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
 	}
 
 	/*
