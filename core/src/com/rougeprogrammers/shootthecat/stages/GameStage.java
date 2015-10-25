@@ -33,9 +33,13 @@ import static com.rougeprogrammers.shootthecat.utils.Constants.TNT_WIDTH;
 import static com.rougeprogrammers.shootthecat.utils.Constants.TNT_Y;
 import static com.rougeprogrammers.shootthecat.utils.Constants.WIDTH;
 
+import javax.swing.GroupLayout.Alignment;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -45,8 +49,15 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
+import com.rougeprogrammers.shootthecat.Main;
 import com.rougeprogrammers.shootthecat.objects.Background;
 import com.rougeprogrammers.shootthecat.objects.Cannon;
 import com.rougeprogrammers.shootthecat.objects.Cat;
@@ -58,11 +69,18 @@ import com.rougeprogrammers.shootthecat.objects.obstacles.TNT;
 import com.rougeprogrammers.shootthecat.objects.obstacles.Thorn;
 import com.rougeprogrammers.shootthecat.screens.GameScreen;
 
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenAccessor;
+import aurelienribon.tweenengine.TweenCallback;
+import aurelienribon.tweenengine.TweenManager;
+import aurelienribon.tweenengine.equations.Back;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class GameStage.
  */
-public class GameStage extends Stage implements ContactListener {
+public class GameStage extends Stage implements ContactListener, TweenAccessor<GameStage>, TweenCallback {
 
 	/** The tag. */
 	protected final String TAG = this.getClass().getSimpleName();
@@ -108,22 +126,64 @@ public class GameStage extends Stage implements ContactListener {
 
 	private GameScreen gameScreen;
 
-	private boolean flag = true;
+	private Window window;
+
+	private Skin skin;
+
+	private TextButton resumeButton;
+
+	private TextButton exitButton;
+
+	private BitmapFont font;
+
+	private TweenManager tweenManager;
+
+	private enum ButtonType {
+		RESUME, EXIT
+	}
 
 	/**
 	 * Instantiates a new game stage.
 	 */
 	public GameStage(GameScreen gameScreen) {
-		// Stretch view port ....
 		super(new ScalingViewport(Scaling.stretch, WIDTH, HEIGHT, new OrthographicCamera(WIDTH, HEIGHT)));
 		this.gameScreen = gameScreen;
 		camera = (OrthographicCamera) getCamera();
 		world = new World(GRAVITY, true);
 		world.setContactListener(this);
 		debugRenderer = new Box2DDebugRenderer();
+		tweenManager = new TweenManager();
+		Tween.registerAccessor(getClass(), this);
+		createObjects();
+		initWindow();
 		Gdx.input.setInputProcessor(this);
 		Gdx.app.log(TAG, "created");
-		createObjects();
+	}
+
+	private TextButton newButton(ButtonType buttonType, String buttonName, String drawableName) {
+		TextButtonStyle style = new TextButtonStyle();
+		style.up = skin.getDrawable(drawableName);
+		style.font = font;
+		TextButton button = new TextButton(buttonName, style);
+		button.setUserObject(buttonType);
+		return button;
+	}
+
+	private void initWindow() {
+		font = Main.assets.getGameBitmapFont();
+		skin = new Skin(Main.assets.getWindowTexturAtlas());
+		resumeButton = newButton(ButtonType.RESUME, "Resume", "pauseButtons");
+		exitButton = newButton(ButtonType.EXIT, "Exit", "pauseButtons");
+		WindowStyle windowStyle = new WindowStyle(font, Color.BLACK, skin.getDrawable("windowSkin"));
+		windowStyle.titleFont = font;
+		window = new Window("Menu", windowStyle);
+		window.setDebug(true);
+		window.setBounds(WIDTH / 2 - 250, HEIGHT / 2 - 150, 500, 300);
+		window.setOrigin(Align.center);
+		window.add(resumeButton).row();
+		window.add(exitButton);
+		window.setVisible(false);
+		addActor(window);
 	}
 
 	/**
@@ -146,6 +206,22 @@ public class GameStage extends Stage implements ContactListener {
 	private void startGame() {
 		gameStarted = true;
 		Gdx.app.log(TAG, "game started");
+	}
+
+	@Override
+	public void onEvent(int type, BaseTween<?> sourc) {
+
+	}
+
+	@Override
+	public int getValues(GameStage target, int tweenType, float[] returnValues) {
+		returnValues[0] = target.window.getScaleX();
+		return returnValues.length;
+	}
+
+	@Override
+	public void setValues(GameStage target, int tweenType, float[] newValues) {
+		target.window.setScale(newValues[0]);
 	}
 
 	/*
@@ -210,17 +286,25 @@ public class GameStage extends Stage implements ContactListener {
 			camera.zoom++;
 			break;
 		case Keys.ESCAPE:
-			if (flag) {
-				gameScreen.pause();
-			} else {
-				gameScreen.resume();
-			}
-			flag = !flag;
+		case Keys.BACK:
+			pause();
+			break;
+		case Keys.RIGHT:
+			window.setScale(0.5f);
+			break;
+		case Keys.LEFT:
+			window.setScale(1.5f);
 			break;
 		default:
 			break;
 		}
 		return true;
+	}
+
+	private void pause() {
+		window.setScale(0);
+		window.setVisible(true);
+		Tween.to(this, 0, 0.5f).target(1).ease(Back.OUT).start(tweenManager);
 	}
 
 	/*
@@ -241,6 +325,7 @@ public class GameStage extends Stage implements ContactListener {
 				updateCamera();
 			}
 		}
+		tweenManager.update(delta);
 	}
 
 	/**
@@ -372,7 +457,7 @@ public class GameStage extends Stage implements ContactListener {
 			cannon.draw(getBatch(), delta);
 			getBatch().end();
 		}
-//		debugRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
+		debugRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
 	}
 
 	/*
@@ -386,10 +471,7 @@ public class GameStage extends Stage implements ContactListener {
 	public void beginContact(Contact contact) {
 		ObjectType a = (ObjectType) contact.getFixtureA().getBody().getUserData();
 		ObjectType b = (ObjectType) contact.getFixtureB().getBody().getUserData();
-		if (a == ObjectType.CAT && b == ObjectType.CAT) {
-
-		} else if (a != ObjectType.GROUND && b != ObjectType.GROUND) {
-			// contact.setEnabled(false);
+		if (a != ObjectType.GROUND && b != ObjectType.GROUND) {
 			contacted = true;
 			Gdx.app.log(TAG, "cat contacted with obstacle");
 		} else if (cat.getVelocityY() <= CAT_OUCH_SPEED) {
@@ -443,6 +525,11 @@ public class GameStage extends Stage implements ContactListener {
 	 */
 	public World getWorld() {
 		return world;
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
 	}
 
 }

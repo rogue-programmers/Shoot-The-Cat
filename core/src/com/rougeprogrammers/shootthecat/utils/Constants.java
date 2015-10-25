@@ -77,7 +77,7 @@ public class Constants {
 	/** The Constant CAT_RESTITUTION. */
 	public static final float CAT_RESTITUTION = 0.6f;
 
-	/** The Constant MIN_OUCH_SPEED. */
+	/** The Constant CAT_OUCH_SPEED. */
 	public static final float CAT_OUCH_SPEED = -2;
 
 	/** The Constant OBSTACLES_DENSITY. */

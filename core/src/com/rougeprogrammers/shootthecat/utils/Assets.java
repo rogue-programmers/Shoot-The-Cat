@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 // TODO: Auto-generated Javadoc
@@ -15,6 +16,9 @@ public class Assets {
 
 	/** The tag. */
 	protected final String TAG = this.getClass().getSimpleName();
+
+	/** The logo texture region. */
+	private TextureRegion logoTextureRegion;
 
 	/** The cat texture region. */
 	private TextureRegion catTextureRegion;
@@ -40,7 +44,13 @@ public class Assets {
 	/** The spring texture region. */
 	private TextureRegion springTextureRegion;
 
+	/** The menu texture region. */
 	private TextureRegion menuTextureRegion;
+
+	/** The buttons texture atlas. */
+	private TextureAtlas buttonsTextureAtlas;
+
+	private TextureAtlas windowTexturAtlas;
 
 	/** The cannon fire sound. */
 	private Sound cannonFireSound;
@@ -57,9 +67,14 @@ public class Assets {
 	/** The spring sound. */
 	private Sound springSound;
 
+	/** The click sound. */
+	private Sound clickSound;
+
+	/** The menu music. */
 	private Music menuMusic;
 
-	public static BitmapFont font, shadow;
+	/** The game bitmap font. */
+	private BitmapFont gameBitmapFont;
 
 	/**
 	 * Instantiates a new assets.
@@ -72,13 +87,10 @@ public class Assets {
 	 * Load.
 	 */
 	public void load() {
-		font = new BitmapFont(Gdx.files.internal("font/text.fnt"), false);
-		font.getData().setScale(.5f, .5f);
-		shadow = new BitmapFont(Gdx.files.internal("font/shadow.fnt"), false);
-		shadow.getData().setScale(.5f, .5f);
 		loadTextures();
 		loadSounds();
 		loadMusics();
+		loadFont();
 		Gdx.app.log(TAG, "loaded");
 	}
 
@@ -86,6 +98,7 @@ public class Assets {
 	 * Load textures.
 	 */
 	private void loadTextures() {
+		logoTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("logo.png")));
 		catTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/cat.png")));
 		grassTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/grass.png")));
 		tntTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/tnt.png")));
@@ -95,6 +108,8 @@ public class Assets {
 		thornTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/thorn.png")));
 		springTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/spring.png")));
 		menuTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/menu_background.jpg")));
+		buttonsTextureAtlas = new TextureAtlas(Gdx.files.internal("atlases/buttons.pack"));
+		windowTexturAtlas = new TextureAtlas(Gdx.files.internal("atlases/window_atlas.pack"));
 	}
 
 	/**
@@ -106,10 +121,30 @@ public class Assets {
 		catOuchSound = Gdx.audio.newSound(Gdx.files.internal("sounds/cat_ouch.wav"));
 		tntExplosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/tnt_explosion.wav"));
 		springSound = Gdx.audio.newSound(Gdx.files.internal("sounds/spring.wav"));
+		clickSound = Gdx.audio.newSound(Gdx.files.internal("sounds/click.wav"));
 	}
 
+	/**
+	 * Load musics.
+	 */
 	private void loadMusics() {
 		menuMusic = Gdx.audio.newMusic(Gdx.files.internal("musics/menu_music.wav"));
+	}
+
+	/**
+	 * Load font.
+	 */
+	private void loadFont() {
+		gameBitmapFont = new BitmapFont(Gdx.files.internal("font/text.fnt"), false);
+	}
+
+	/**
+	 * Gets the logo texture region.
+	 *
+	 * @return the logo texture region
+	 */
+	public TextureRegion getLogoTextureRegion() {
+		return logoTextureRegion;
 	}
 
 	/**
@@ -184,8 +219,26 @@ public class Assets {
 		return springTextureRegion;
 	}
 
+	/**
+	 * Gets the menu texture region.
+	 *
+	 * @return the menu texture region
+	 */
 	public TextureRegion getMenuTextureRegion() {
 		return menuTextureRegion;
+	}
+
+	/**
+	 * Gets the buttons texture atlas.
+	 *
+	 * @return the buttons texture atlas
+	 */
+	public TextureAtlas getButtonsTextureAtlas() {
+		return buttonsTextureAtlas;
+	}
+
+	public TextureAtlas getWindowTexturAtlas() {
+		return windowTexturAtlas;
 	}
 
 	/**
@@ -233,8 +286,31 @@ public class Assets {
 		return springSound;
 	}
 
+	/**
+	 * Gets the click sound.
+	 *
+	 * @return the click sound
+	 */
+	public Sound getClickSound() {
+		return clickSound;
+	}
+
+	/**
+	 * Gets the menu music.
+	 *
+	 * @return the menu music
+	 */
 	public Music getMenuMusic() {
 		return menuMusic;
+	}
+
+	/**
+	 * Gets the game bitmap font.
+	 *
+	 * @return the game bitmap font
+	 */
+	public BitmapFont getGameBitmapFont() {
+		return gameBitmapFont;
 	}
 
 }

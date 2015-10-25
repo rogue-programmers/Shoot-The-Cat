@@ -2,7 +2,7 @@ package com.rougeprogrammers.shootthecat;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.rougeprogrammers.shootthecat.screens.RougesScreen;
+import com.rougeprogrammers.shootthecat.screens.GameScreen;
 import com.rougeprogrammers.shootthecat.utils.Assets;
 
 // TODO: Auto-generated Javadoc
@@ -24,8 +24,10 @@ public class Main extends Game {
 	 */
 	@Override
 	public void create() {
+		Main.assets = new Assets();
+		Main.assets.load();
 		Gdx.app.log(TAG, "created");
-		setScreen(new RougesScreen(this));
+		setScreen(new GameScreen());
 	}
 
 	@Override

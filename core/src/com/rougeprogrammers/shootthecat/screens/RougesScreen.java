@@ -6,12 +6,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.rougeprogrammers.shootthecat.Main;
-import com.rougeprogrammers.shootthecat.utils.Assets;
 import com.rougeprogrammers.shootthecat.utils.Constants;
 
 import aurelienribon.tweenengine.BaseTween;
@@ -24,7 +22,7 @@ import aurelienribon.tweenengine.TweenManager;
 /**
  * The Class RougesScreen.
  */
-public class RougesScreen implements Screen, TweenAccessor<RougesScreen>, Runnable, TweenCallback {
+public class RougesScreen implements Screen, TweenAccessor<RougesScreen>, TweenCallback {
 
 	/** The tag. */
 	protected final String TAG = this.getClass().getSimpleName();
@@ -61,13 +59,13 @@ public class RougesScreen implements Screen, TweenAccessor<RougesScreen>, Runnab
 	 */
 	public RougesScreen(Game game) {
 		this.game = game;
-		manager = new TweenManager();
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Constants.WIDTH, Constants.HEIGHT);
 		batch = new SpriteBatch();
 		batch.setProjectionMatrix(camera.combined);
-		logo = new TextureRegion(new Texture(Gdx.files.internal("logo.png")));
-		rect = new Rectangle(Constants.WIDTH / 2, Constants.HEIGHT / 2, 267, 363);
+		logo = Main.assets.getLogoTextureRegion();
+		rect = new Rectangle(Constants.WIDTH / 2, Constants.HEIGHT / 2, logo.getRegionWidth(), logo.getRegionHeight());
+		manager = new TweenManager();
 		Tween.registerAccessor(this.getClass(), this);
 	}
 
@@ -78,19 +76,7 @@ public class RougesScreen implements Screen, TweenAccessor<RougesScreen>, Runnab
 	 */
 	@Override
 	public void show() {
-		new Thread(this).start();
 		Tween.to(this, APLPHA_TYPE, 2f).target(1f).repeatYoyo(1, 0.5f).delay(0.5f).setCallback(this).start(manager);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Runnable#run()
-	 */
-	@Override
-	public void run() {
-		Main.assets = new Assets();
-		Main.assets.load();
 	}
 
 	/*
@@ -102,15 +88,13 @@ public class RougesScreen implements Screen, TweenAccessor<RougesScreen>, Runnab
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		// batch.enableBlending();
-		// Color color = batch.getColor();
-		// batch.setColor(color.r, color.g, color.b, alpha);
+		Color color = batch.getColor();
+		batch.setColor(color.r, color.g, color.b, alpha);
 		batch.draw(logo, rect.x - rect.width / 2, rect.y - rect.height / 2, rect.width, rect.height);
-		// batch.disableBlending();
 		batch.end();
 		manager.update(delta);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -119,8 +103,7 @@ public class RougesScreen implements Screen, TweenAccessor<RougesScreen>, Runnab
 	 */
 	@Override
 	public int getValues(RougesScreen target, int tweenType, float[] returnValues) {
-		returnValues[0] = target.batch.getColor().a;
-		// returnValues[0] = target.alpha;
+		returnValues[0] = target.alpha;
 		return 1;
 	}
 
@@ -132,9 +115,7 @@ public class RougesScreen implements Screen, TweenAccessor<RougesScreen>, Runnab
 	 */
 	@Override
 	public void setValues(RougesScreen target, int tweenType, float[] newValues) {
-		// target.alpha = newValues[0];
-		Color color = batch.getColor();
-		batch.setColor(color.r, color.g, color.b, newValues[0]);
+		target.alpha = newValues[0];
 	}
 
 	/*
