@@ -25,9 +25,12 @@ public class Main extends Game {
 	@Override
 	public void create() {
 		Gdx.app.log(TAG, "created");
-		assets = new Assets();
-		assets.load();
 		setScreen(new RougesScreen(this));
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
 	}
 
 }

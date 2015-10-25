@@ -114,6 +114,7 @@ public class GameStage extends Stage implements ContactListener {
 	 * Instantiates a new game stage.
 	 */
 	public GameStage(GameScreen gameScreen) {
+		// Stretch view port ....
 		super(new ScalingViewport(Scaling.stretch, WIDTH, HEIGHT, new OrthographicCamera(WIDTH, HEIGHT)));
 		this.gameScreen = gameScreen;
 		camera = (OrthographicCamera) getCamera();

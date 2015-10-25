@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.rougeprogrammers.shootthecat.Main;
+import com.rougeprogrammers.shootthecat.utils.Assets;
 import com.rougeprogrammers.shootthecat.utils.Constants;
 
 import aurelienribon.tweenengine.BaseTween;
@@ -64,7 +66,7 @@ public class RougesScreen implements Screen, TweenAccessor<RougesScreen>, Runnab
 		camera.setToOrtho(false, Constants.WIDTH, Constants.HEIGHT);
 		batch = new SpriteBatch();
 		batch.setProjectionMatrix(camera.combined);
-		logo = new TextureRegion(new Texture(Gdx.files.internal("textures/logo.png")));
+		logo = new TextureRegion(new Texture(Gdx.files.internal("logo.png")));
 		rect = new Rectangle(Constants.WIDTH / 2, Constants.HEIGHT / 2, 267, 363);
 		Tween.registerAccessor(this.getClass(), this);
 	}
@@ -77,6 +79,7 @@ public class RougesScreen implements Screen, TweenAccessor<RougesScreen>, Runnab
 	@Override
 	public void show() {
 		new Thread(this).start();
+		Tween.to(this, APLPHA_TYPE, 2f).target(1f).repeatYoyo(1, 0.5f).delay(0.5f).setCallback(this).start(manager);
 	}
 
 	/*
@@ -86,12 +89,8 @@ public class RougesScreen implements Screen, TweenAccessor<RougesScreen>, Runnab
 	 */
 	@Override
 	public void run() {
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			Gdx.app.error(TAG, e.getMessage());
-		}
-		Tween.to(this, APLPHA_TYPE, 2f).target(1f).repeatYoyo(1, 0.5f).setCallback(this).start(manager);
+		Main.assets = new Assets();
+		Main.assets.load();
 	}
 
 	/*
@@ -103,13 +102,52 @@ public class RougesScreen implements Screen, TweenAccessor<RougesScreen>, Runnab
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		batch.enableBlending();
-		Color color = batch.getColor();
-		batch.setColor(color.r, color.g, color.b, alpha);
+		// batch.enableBlending();
+		// Color color = batch.getColor();
+		// batch.setColor(color.r, color.g, color.b, alpha);
 		batch.draw(logo, rect.x - rect.width / 2, rect.y - rect.height / 2, rect.width, rect.height);
-		batch.disableBlending();
+		// batch.disableBlending();
 		batch.end();
 		manager.update(delta);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see aurelienribon.tweenengine.TweenAccessor#getValues(java.lang.Object,
+	 * int, float[])
+	 */
+	@Override
+	public int getValues(RougesScreen target, int tweenType, float[] returnValues) {
+		returnValues[0] = target.batch.getColor().a;
+		// returnValues[0] = target.alpha;
+		return 1;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see aurelienribon.tweenengine.TweenAccessor#setValues(java.lang.Object,
+	 * int, float[])
+	 */
+	@Override
+	public void setValues(RougesScreen target, int tweenType, float[] newValues) {
+		// target.alpha = newValues[0];
+		Color color = batch.getColor();
+		batch.setColor(color.r, color.g, color.b, newValues[0]);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see aurelienribon.tweenengine.TweenCallback#onEvent(int,
+	 * aurelienribon.tweenengine.BaseTween)
+	 */
+	@Override
+	public void onEvent(int type, BaseTween<?> source) {
+		if (type == TweenCallback.COMPLETE) {
+			game.setScreen(new MenuScreen(game));
+		}
 	}
 
 	/*
@@ -160,42 +198,6 @@ public class RougesScreen implements Screen, TweenAccessor<RougesScreen>, Runnab
 	@Override
 	public void dispose() {
 		batch.dispose();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see aurelienribon.tweenengine.TweenAccessor#getValues(java.lang.Object,
-	 * int, float[])
-	 */
-	@Override
-	public int getValues(RougesScreen target, int tweenType, float[] returnValues) {
-		returnValues[0] = target.alpha;
-		return returnValues.length;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see aurelienribon.tweenengine.TweenAccessor#setValues(java.lang.Object,
-	 * int, float[])
-	 */
-	@Override
-	public void setValues(RougesScreen target, int tweenType, float[] newValues) {
-		target.alpha = newValues[0];
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see aurelienribon.tweenengine.TweenCallback#onEvent(int,
-	 * aurelienribon.tweenengine.BaseTween)
-	 */
-	@Override
-	public void onEvent(int type, BaseTween<?> source) {
-		if (type == TweenCallback.COMPLETE) {
-			game.setScreen(new GameScreen());
-		}
 	}
 
 }

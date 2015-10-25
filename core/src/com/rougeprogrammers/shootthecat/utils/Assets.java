@@ -1,8 +1,10 @@
 package com.rougeprogrammers.shootthecat.utils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 // TODO: Auto-generated Javadoc
@@ -38,6 +40,8 @@ public class Assets {
 	/** The spring texture region. */
 	private TextureRegion springTextureRegion;
 
+	private TextureRegion menuTextureRegion;
+
 	/** The cannon fire sound. */
 	private Sound cannonFireSound;
 
@@ -53,6 +57,10 @@ public class Assets {
 	/** The spring sound. */
 	private Sound springSound;
 
+	private Music menuMusic;
+
+	public static BitmapFont font, shadow;
+
 	/**
 	 * Instantiates a new assets.
 	 */
@@ -64,8 +72,13 @@ public class Assets {
 	 * Load.
 	 */
 	public void load() {
+		font = new BitmapFont(Gdx.files.internal("font/text.fnt"), false);
+		font.getData().setScale(.5f, .5f);
+		shadow = new BitmapFont(Gdx.files.internal("font/shadow.fnt"), false);
+		shadow.getData().setScale(.5f, .5f);
 		loadTextures();
 		loadSounds();
+		loadMusics();
 		Gdx.app.log(TAG, "loaded");
 	}
 
@@ -81,6 +94,7 @@ public class Assets {
 		cannonTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/cannon.gif")));
 		thornTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/thorn.png")));
 		springTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/spring.png")));
+		menuTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/menu_background.jpg")));
 	}
 
 	/**
@@ -92,6 +106,10 @@ public class Assets {
 		catOuchSound = Gdx.audio.newSound(Gdx.files.internal("sounds/cat_ouch.wav"));
 		tntExplosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/tnt_explosion.wav"));
 		springSound = Gdx.audio.newSound(Gdx.files.internal("sounds/spring.wav"));
+	}
+
+	private void loadMusics() {
+		menuMusic = Gdx.audio.newMusic(Gdx.files.internal("musics/menu_music.wav"));
 	}
 
 	/**
@@ -166,6 +184,10 @@ public class Assets {
 		return springTextureRegion;
 	}
 
+	public TextureRegion getMenuTextureRegion() {
+		return menuTextureRegion;
+	}
+
 	/**
 	 * Gets the cannon fire sound.
 	 *
@@ -209,6 +231,10 @@ public class Assets {
 	 */
 	public Sound getSpringSound() {
 		return springSound;
+	}
+
+	public Music getMenuMusic() {
+		return menuMusic;
 	}
 
 }
