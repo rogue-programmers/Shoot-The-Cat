@@ -1,0 +1,19 @@
+
+window_atlas.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+windowSkin
+  rotate: false
+  xy: 1, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: -1
+pauseButtons
+  rotate: false
+  xy: 403, 166
+  size: 150, 75
+  orig: 150, 75
+  offset: 0, 0
+  index: -1

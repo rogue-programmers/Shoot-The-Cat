@@ -1,0 +1,26 @@
+
+buttons.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+playButton
+  rotate: false
+  xy: 1, 99
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+exit
+  rotate: false
+  xy: 1, 1
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+setting
+  rotate: false
+  xy: 131, 155
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
