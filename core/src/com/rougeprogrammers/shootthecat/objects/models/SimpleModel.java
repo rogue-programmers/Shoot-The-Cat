@@ -53,7 +53,7 @@ public class SimpleModel extends Rectangle implements Disposable {
 	 * @param batch
 	 *            the batch
 	 */
-	public void draw(Batch batch, float delta) {
+	public void draw(Batch batch) {
 		batch.draw(textureRegion, x - width / 2, y - height / 2, width, height);
 	}
 

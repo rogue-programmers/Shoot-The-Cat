@@ -66,9 +66,8 @@ public class Cannon extends SimpleModel {
 	 * com.rougeprogrammers.shootthecat.objects.models.SimpleModel#draw(com.
 	 * badlogic.gdx.graphics.g2d.Batch)
 	 */
-	@Override
 	public void draw(Batch batch, float delta) {
-		super.draw(batch, delta);
+		super.draw(batch);
 		if (exploded) {
 			effect.draw(batch, delta);
 		}

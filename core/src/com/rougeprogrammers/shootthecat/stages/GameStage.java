@@ -10,6 +10,7 @@ import static com.rougeprogrammers.shootthecat.utils.Constants.CANNON_WIDTH;
 import static com.rougeprogrammers.shootthecat.utils.Constants.CANNON_X;
 import static com.rougeprogrammers.shootthecat.utils.Constants.CANNON_Y;
 import static com.rougeprogrammers.shootthecat.utils.Constants.CAT_HEIGHT;
+import static com.rougeprogrammers.shootthecat.utils.Constants.CAT_OUCH_SPEED;
 import static com.rougeprogrammers.shootthecat.utils.Constants.CAT_RESTITUTION;
 import static com.rougeprogrammers.shootthecat.utils.Constants.CAT_WIDTH;
 import static com.rougeprogrammers.shootthecat.utils.Constants.CAT_X;
@@ -21,7 +22,6 @@ import static com.rougeprogrammers.shootthecat.utils.Constants.GROUND_WIDTH;
 import static com.rougeprogrammers.shootthecat.utils.Constants.GROUND_X;
 import static com.rougeprogrammers.shootthecat.utils.Constants.GROUND_Y;
 import static com.rougeprogrammers.shootthecat.utils.Constants.HEIGHT;
-import static com.rougeprogrammers.shootthecat.utils.Constants.CAT_OUCH_SPEED;
 import static com.rougeprogrammers.shootthecat.utils.Constants.SPRING_HEIGHT;
 import static com.rougeprogrammers.shootthecat.utils.Constants.SPRING_WIDTH;
 import static com.rougeprogrammers.shootthecat.utils.Constants.SPRING_Y;
@@ -33,13 +33,14 @@ import static com.rougeprogrammers.shootthecat.utils.Constants.TNT_WIDTH;
 import static com.rougeprogrammers.shootthecat.utils.Constants.TNT_Y;
 import static com.rougeprogrammers.shootthecat.utils.Constants.WIDTH;
 
-import javax.swing.GroupLayout.Alignment;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -52,8 +53,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
@@ -80,10 +81,14 @@ import aurelienribon.tweenengine.equations.Back;
 /**
  * The Class GameStage.
  */
-public class GameStage extends Stage implements ContactListener, TweenAccessor<GameStage>, TweenCallback {
+public class GameStage extends Stage implements ContactListener {
 
 	/** The tag. */
 	protected final String TAG = this.getClass().getSimpleName();
+
+//	private static final int FADE_TYPE = 0;
+//
+//	private static final int MENU_SCALE_TYPE = 1;
 
 	/** The world. */
 	private World world;
@@ -124,67 +129,74 @@ public class GameStage extends Stage implements ContactListener, TweenAccessor<G
 	/** The game started. */
 	public boolean gameStarted;
 
-	private GameScreen gameScreen;
-
-	private Window window;
-
-	private Skin skin;
-
-	private TextButton resumeButton;
-
-	private TextButton exitButton;
-
-	private BitmapFont font;
-
-	private TweenManager tweenManager;
-
-	private enum ButtonType {
-		RESUME, EXIT
-	}
+//	private Window window;
+//
+//	private Skin skin;
+//
+//	private TextButton resumeButton;
+//
+//	private TextButton exitButton;
+//
+//	private BitmapFont font;
+//
+//	private TweenManager tweenManager;
+//
+	private ShapeRenderer shapeRenderer;
+//
+//	private enum ButtonType {
+//		RESUME, EXIT
+//	}
+//
+//	private enum GameState {
+//		START, PAUSE, RUNNING, END
+//	}
+	
+//	private GameState gameState;
 
 	/**
 	 * Instantiates a new game stage.
 	 */
 	public GameStage(GameScreen gameScreen) {
 		super(new ScalingViewport(Scaling.stretch, WIDTH, HEIGHT, new OrthographicCamera(WIDTH, HEIGHT)));
-		this.gameScreen = gameScreen;
 		camera = (OrthographicCamera) getCamera();
 		world = new World(GRAVITY, true);
 		world.setContactListener(this);
 		debugRenderer = new Box2DDebugRenderer();
-		tweenManager = new TweenManager();
-		Tween.registerAccessor(getClass(), this);
+		shapeRenderer = new ShapeRenderer();
+		shapeRenderer.setProjectionMatrix(camera.combined);
+//		tweenManager = new TweenManager();
+//		Tween.registerAccessor(getClass(), this);
 		createObjects();
-		initWindow();
+//		initWindow();
 		Gdx.input.setInputProcessor(this);
 		Gdx.app.log(TAG, "created");
 	}
 
-	private TextButton newButton(ButtonType buttonType, String buttonName, String drawableName) {
-		TextButtonStyle style = new TextButtonStyle();
-		style.up = skin.getDrawable(drawableName);
-		style.font = font;
-		TextButton button = new TextButton(buttonName, style);
-		button.setUserObject(buttonType);
-		return button;
-	}
+//	private TextButton newButton(ButtonType buttonType, String buttonName, String drawableName) {
+//		TextButtonStyle style = new TextButtonStyle();
+//		style.up = skin.getDrawable(drawableName);
+//		style.font = font;
+//		TextButton button = new TextButton(buttonName, style);
+//		button.setUserObject(buttonType);
+//		return button;
+//	}
 
-	private void initWindow() {
-		font = Main.assets.getGameBitmapFont();
-		skin = new Skin(Main.assets.getWindowTexturAtlas());
-		resumeButton = newButton(ButtonType.RESUME, "Resume", "pauseButtons");
-		exitButton = newButton(ButtonType.EXIT, "Exit", "pauseButtons");
-		WindowStyle windowStyle = new WindowStyle(font, Color.BLACK, skin.getDrawable("windowSkin"));
-		windowStyle.titleFont = font;
-		window = new Window("Menu", windowStyle);
-		window.setDebug(true);
-		window.setBounds(WIDTH / 2 - 250, HEIGHT / 2 - 150, 500, 300);
-		window.setOrigin(Align.center);
-		window.add(resumeButton).row();
-		window.add(exitButton);
-		window.setVisible(false);
-		addActor(window);
-	}
+//	private void initWindow() {
+//		font = Main.assets.getGameBitmapFont();
+//		skin = new Skin(Main.assets.getWindowTexturAtlas());
+//		resumeButton = newButton(ButtonType.RESUME, "Resume", "pauseButtons");
+//		exitButton = newButton(ButtonType.EXIT, "Exit", "pauseButtons");
+//		WindowStyle windowStyle = new WindowStyle(font, Color.BLACK, skin.getDrawable("windowSkin"));
+//		windowStyle.titleFont = font;
+//		window = new Window("Menu", windowStyle);
+//		window.setDebug(true);
+//		window.setBounds(camera.position.x - 250, camera.position.y - 150, 500, 300);
+//		window.setOrigin(Align.center);
+//		window.add(resumeButton).row();
+//		window.add(exitButton);
+//		window.setVisible(false);
+//		addActor(window);
+//	}
 
 	/**
 	 * Create objects.
@@ -208,21 +220,53 @@ public class GameStage extends Stage implements ContactListener, TweenAccessor<G
 		Gdx.app.log(TAG, "game started");
 	}
 
-	@Override
-	public void onEvent(int type, BaseTween<?> sourc) {
+//	/**
+//	 * Fade in.
+//	 */
+//	public void fadeIn() {
+//		Tween.to(this, FADE_TYPE, 2f).target(1, 0).setCallback(this).setUserData("fade_in").start(tweenManager);
+//	}
+//
+//	/**
+//	 * Fade out.
+//	 */
+//	public void fadeOut() {
+//		Tween.to(this, FADE_TYPE, 2f).target(0, 1).setCallback(this).setUserData("fade_out").start(tweenManager);
+//	}
 
-	}
-
-	@Override
-	public int getValues(GameStage target, int tweenType, float[] returnValues) {
-		returnValues[0] = target.window.getScaleX();
-		return returnValues.length;
-	}
-
-	@Override
-	public void setValues(GameStage target, int tweenType, float[] newValues) {
-		target.window.setScale(newValues[0]);
-	}
+//	@Override
+//	public void onEvent(int type, BaseTween<?> sourc) {
+//
+//	}
+//
+//	@Override
+//	public int getValues(GameStage target, int tweenType, float[] returnValues) {
+//		switch (tweenType) {
+//		case FADE_TYPE:
+//			returnValues[0] = target.shapeRenderer.getColor().a;
+//			break;
+//		case MENU_SCALE_TYPE:
+//			returnValues[0] = target.window.getScaleX();
+//			break;
+//		default:
+//			break;
+//		}
+//		return returnValues.length;
+//	}
+//
+//	@Override
+//	public void setValues(GameStage target, int tweenType, float[] newValues) {
+//		switch (tweenType) {
+//		case FADE_TYPE:
+//			target.shapeRenderer.setColor(0, 0, 0, newValues[0]);
+//			break;
+//		case MENU_SCALE_TYPE:
+//			target.window.setScale(newValues[0]);
+//			break;
+//		default:
+//			break;
+//		}
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -290,10 +334,10 @@ public class GameStage extends Stage implements ContactListener, TweenAccessor<G
 			pause();
 			break;
 		case Keys.RIGHT:
-			window.setScale(0.5f);
+//			window.setScale(0.5f);
 			break;
 		case Keys.LEFT:
-			window.setScale(1.5f);
+//			window.setScale(1.5f);
 			break;
 		default:
 			break;
@@ -302,9 +346,9 @@ public class GameStage extends Stage implements ContactListener, TweenAccessor<G
 	}
 
 	private void pause() {
-		window.setScale(0);
-		window.setVisible(true);
-		Tween.to(this, 0, 0.5f).target(1).ease(Back.OUT).start(tweenManager);
+//		window.setScale(0);
+//		window.setVisible(true);
+//		Tween.to(this, MENU_SCALE_TYPE, 0.5f).target(1).ease(Back.OUT).start(tweenManager);
 	}
 
 	/*
@@ -325,7 +369,7 @@ public class GameStage extends Stage implements ContactListener, TweenAccessor<G
 				updateCamera();
 			}
 		}
-		tweenManager.update(delta);
+//		tweenManager.update(delta);
 	}
 
 	/**
@@ -446,10 +490,10 @@ public class GameStage extends Stage implements ContactListener, TweenAccessor<G
 	 */
 	@Override
 	public void draw() {
-		float delta = Gdx.graphics.getDeltaTime();
+		float delta = Math.max(1 / 30f, Gdx.graphics.getDeltaTime());
 		getBatch().begin();
-		firstBackground.draw(getBatch(), delta);
-		secondBackground.draw(getBatch(), delta);
+		firstBackground.draw(getBatch());
+		secondBackground.draw(getBatch());
 		getBatch().end();
 		super.draw();
 		if (cannon != null) {
@@ -457,7 +501,13 @@ public class GameStage extends Stage implements ContactListener, TweenAccessor<G
 			cannon.draw(getBatch(), delta);
 			getBatch().end();
 		}
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		debugRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
+		shapeRenderer.begin(ShapeType.Filled);
+		shapeRenderer.rect(0, 0, WIDTH, HEIGHT);
+		shapeRenderer.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	/*

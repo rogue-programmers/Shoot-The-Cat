@@ -33,6 +33,7 @@ public class GameScreen extends ScreenAdapter {
 	@Override
 	public void show() {
 		gameStage = new GameStage(this);
+//		gameStage.fadeOut();
 		Gdx.app.log(TAG, "started");
 	}
 
