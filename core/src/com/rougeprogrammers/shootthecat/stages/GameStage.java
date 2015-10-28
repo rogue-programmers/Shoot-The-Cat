@@ -501,13 +501,13 @@ public class GameStage extends Stage implements ContactListener {
 			cannon.draw(getBatch(), delta);
 			getBatch().end();
 		}
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		debugRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
-		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.rect(0, 0, WIDTH, HEIGHT);
-		shapeRenderer.end();
-		Gdx.gl.glDisable(GL20.GL_BLEND);
+//		Gdx.gl.glEnable(GL20.GL_BLEND);
+//		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+//		debugRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
+//		shapeRenderer.begin(ShapeType.Filled);
+//		shapeRenderer.rect(0, 0, WIDTH, HEIGHT);
+//		shapeRenderer.end();
+//		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	/*
