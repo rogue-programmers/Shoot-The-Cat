@@ -4,12 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.rougeprogrammers.shootthecat.Main;
 import com.rougeprogrammers.shootthecat.objects.Cat;
+import com.rougeprogrammers.shootthecat.objects.Ground;
 import com.rougeprogrammers.shootthecat.objects.models.ObjectType;
 import com.rougeprogrammers.shootthecat.objects.models.Obstacle;
 import com.rougeprogrammers.shootthecat.stages.GameStage;
@@ -20,6 +22,15 @@ import com.rougeprogrammers.shootthecat.utils.Constants;
  * The Class Thorn.
  */
 public class Thorn extends Obstacle {
+
+	/** The Constant THORN_WIDTH. */
+	public static final float WIDTH = 100;
+
+	/** The Constant THORN_HEIGHT. */
+	public static final float HEIGHT = 100;
+
+	/** The Constant THORN_Y. */
+	public static final float Y = Ground.Y + (Ground.HEIGHT + HEIGHT) / 2;
 
 	/** The rect. */
 	private Rectangle rect;
@@ -41,9 +52,9 @@ public class Thorn extends Obstacle {
 	 * @param gameStage
 	 *            the game stage
 	 */
-	public Thorn(float x, float y, float width, float height, GameStage gameStage) {
-		super(x, y, width, height, gameStage);
-		rect = new Rectangle(x, y + height / 4, width * 2, height * 1.5f);
+	public Thorn(float x, GameStage gameStage) {
+		super(x, Y, WIDTH, HEIGHT, gameStage);
+		rect = new Rectangle(x, Y + HEIGHT / 4, WIDTH * 2, HEIGHT * 1.5f);
 		textureRegion = Main.assets.getThornTextureRegion();
 		Gdx.app.log(TAG, "created");
 	}
@@ -63,7 +74,7 @@ public class Thorn extends Obstacle {
 		Body body = gameStage.getWorld().createBody(bodyDef);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(getWidth() / 2 * Constants.WORLD_TO_BOX, getHeight() / 2 * Constants.WORLD_TO_BOX);
-		body.createFixture(shape, Constants.OBSTACLES_DENSITY);
+		body.createFixture(shape, Obstacle.DENSITY);
 		shape.dispose();
 		body.setUserData(ObjectType.THORN);
 		return body;
@@ -76,11 +87,11 @@ public class Thorn extends Obstacle {
 	 * rougeprogrammers.shootthecat.objects.Cat)
 	 */
 	@Override
-	public void action(Cat cat) {
+	public void action(Cat cat, Vector2[] contactPoints) {
 		body.setActive(false);
-		cat.setLinearVelocity(0, 0);
+		cat.setLinearVelocity(0, cat.getVelocityY());
 		cat.setRestitution(0);
-		cat.ouch();
+		cat.ouch(contactPoints);
 		Gdx.app.log(TAG, "acted");
 	}
 

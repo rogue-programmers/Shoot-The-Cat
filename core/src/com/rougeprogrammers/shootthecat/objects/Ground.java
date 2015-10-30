@@ -20,6 +20,24 @@ import com.rougeprogrammers.shootthecat.utils.Constants;
  */
 public class Ground extends Model {
 
+	/** The Constant GROUND_WIDTH. */
+	public static final float WIDTH = Constants.WIDTH * 1.5f;
+
+	/** The Constant GROUND_HEIGHT. */
+	public static final float HEIGHT = 38;
+
+	/** The Constant GROUND_X. */
+	public static final float X = Constants.WIDTH / 2;
+
+	/** The Constant GROUND_Y. */
+	public static final float Y = HEIGHT / 2;
+
+	/** The Constant GROUND_DENSITY. */
+	public static final float DENSITY = 1f;
+
+	/** The Constant GROUND_BODY_TEXTURE_SCALER. */
+	public static final float BODY_TEXTURE_SCALER = 12;
+
 	/** The rect. */
 	private Rectangle rect;
 
@@ -43,11 +61,13 @@ public class Ground extends Model {
 	 * @param gameStage
 	 *            the game stage
 	 */
-	public Ground(float x, float y, float width, float height, GameStage gameStage) {
-		super(x, y, width, height, gameStage);
-		rect = new Rectangle(x, y + height * (Constants.GROUND_BODY_TEXTURE_SCALER - 1) / 2, width,
-				height * Constants.GROUND_BODY_TEXTURE_SCALER);
-		textureRegion = Main.assets.getGrassTextureRegion();
+	public Ground(GameStage gameStage) {
+		super(X, Y, WIDTH, HEIGHT, gameStage);
+		// rect = new Rectangle(X, Y + HEIGHT * (BODY_TEXTURE_SCALER - 1) / 2,
+		// WIDTH, HEIGHT * BODY_TEXTURE_SCALER);
+		rect = new Rectangle(X, Constants.HEIGHT / 2, WIDTH, Constants.HEIGHT);
+		// textureRegion = Main.assets.getGrassTextureRegion();
+		textureRegion = Main.assets.getBackgroundTextureRegion();
 		Gdx.app.log(TAG, "created");
 	}
 
@@ -66,7 +86,7 @@ public class Ground extends Model {
 		Body body = gameStage.getWorld().createBody(bodyDef);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(getWidth() / 2 * Constants.WORLD_TO_BOX, getHeight() / 2 * Constants.WORLD_TO_BOX);
-		body.createFixture(shape, Constants.GROUND_DENSITY);
+		body.createFixture(shape, DENSITY);
 		shape.dispose();
 		body.setUserData(ObjectType.GROUND);
 		return body;

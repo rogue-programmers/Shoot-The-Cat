@@ -2,14 +2,20 @@ package com.rougeprogrammers.shootthecat.objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.utils.Array;
 import com.rougeprogrammers.shootthecat.Main;
 import com.rougeprogrammers.shootthecat.objects.models.Model;
 import com.rougeprogrammers.shootthecat.objects.models.ObjectType;
@@ -22,8 +28,29 @@ import com.rougeprogrammers.shootthecat.utils.Constants;
  */
 public class Cat extends Model {
 
-	/** The texture region. */
-	private TextureRegion textureRegion;
+	/** The Constant CAT_WIDTH. */
+	public static final float WIDTH = 75;
+
+	/** The Constant CAT_HEIGHT. */
+	public static final float HEIGHT = 60;
+
+	/** The Constant CAT_X. */
+	public static final float X = 340;
+
+	/** The Constant CAT_Y. */
+	public static final float Y = 200;
+
+	/** The Constant CAT_DENSITY. */
+	public static final float DENSITY = 0.9f;
+
+	/** The Constant CAT_FRICTION. */
+	public static final float FRICTION = 0.1f;
+
+	/** The Constant CAT_RESTITUTION. */
+	public static final float RESTITUTION = 0.6f;
+
+	/** The Constant CAT_OUCH_SPEED. */
+	public static final float OUCH_SPEED = -5;
 
 	/** The shoot sound. */
 	private Sound shootSound;
@@ -31,25 +58,42 @@ public class Cat extends Model {
 	/** The ouch sound. */
 	private Sound ouchSound;
 
+	/** The texture region. */
+	private TextureRegion textureRegion;
+
+	/** The atlas regions. */
+	private Array<AtlasRegion> atlasRegions;
+
+	/** The animation. */
+	private Animation animation;
+
+	/** The atlas. */
+	private TextureAtlas atlas;
+
+	/** The bloods. */
+	private Array<Blood> bloods;
+
+	/** The state time. */
+	private float stateTime;
+
+	/** The running. */
+	private boolean running;
+
 	/**
 	 * Instantiates a new cat.
 	 *
-	 * @param x
-	 *            the x
-	 * @param y
-	 *            the y
-	 * @param width
-	 *            the width
-	 * @param height
-	 *            the height
 	 * @param gameStage
 	 *            the game stage
 	 */
-	public Cat(float x, float y, float width, float height, GameStage gameStage) {
-		super(x, y, width, height, gameStage);
-		textureRegion = Main.assets.getCatTextureRegion();
+	public Cat(GameStage gameStage) {
+		super(X, Y, WIDTH, HEIGHT, gameStage);
 		shootSound = Main.assets.getCatShootSound();
 		ouchSound = Main.assets.getCatOuchSound();
+		atlas = Main.assets.getCatTextureAtlas();
+		atlasRegions = atlas.getRegions();
+		textureRegion = atlasRegions.get(6);
+		animation = new Animation(0.2f, atlasRegions, PlayMode.LOOP);
+		bloods = new Array<Blood>();
 		Gdx.app.log(TAG, "created");
 	}
 
@@ -65,14 +109,15 @@ public class Cat extends Model {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(x * Constants.WORLD_TO_BOX, y * Constants.WORLD_TO_BOX);
+		bodyDef.linearVelocity.x = 1;
 		Body body = gameStage.getWorld().createBody(bodyDef);
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(getWidth() / 2 * Constants.WORLD_TO_BOX, getHeight() / 2 * Constants.WORLD_TO_BOX);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
-		fixtureDef.density = Constants.CAT_DENSITY;
-		fixtureDef.friction = Constants.CAT_FRICTION;
-		fixtureDef.restitution = Constants.CAT_RESTITUTION;
+		fixtureDef.density = DENSITY;
+		fixtureDef.friction = FRICTION;
+		fixtureDef.restitution = RESTITUTION;
 		body.createFixture(fixtureDef);
 		shape.dispose();
 		body.setUserData(ObjectType.CAT);
@@ -91,6 +136,15 @@ public class Cat extends Model {
 		if (getVelocityX() < 0) {
 			setLinearVelocity(Math.abs(getVelocityX()), getVelocityY());
 		}
+		for (Blood blood : bloods) {
+			if (getX() - blood.x > Constants.WIDTH) {
+				bloods.removeValue(blood, false);
+			}
+		}
+		if (running) {
+			stateTime += delta;
+			textureRegion = animation.getKeyFrame(stateTime);
+		}
 	}
 
 	/*
@@ -104,6 +158,16 @@ public class Cat extends Model {
 	public void draw(Batch batch, float parentAlpha) {
 		batch.draw(textureRegion, getX() - getWidth() / 2, getY() - getHeight() / 2, getOriginX(), getOriginY(),
 				getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+		for (Blood blood : bloods) {
+			blood.draw(batch);
+		}
+	}
+
+	/**
+	 * Die.
+	 */
+	public void die() {
+		textureRegion = atlas.findRegion("cat6");
 	}
 
 	/**
@@ -126,8 +190,16 @@ public class Cat extends Model {
 
 	/**
 	 * play ouch sound.
+	 *
+	 * @param contactPoints
+	 *            the contact points
 	 */
-	public void ouch() {
+	public void ouch(Vector2[] contactPoints) {
+		textureRegion = atlas.findRegion("cat" + MathUtils.random(0, 5));
+		for (int i = 0; i < contactPoints.length; i++) {
+			bloods.add(new Blood(contactPoints[i].x * Constants.BOX_TO_WORLD,
+					contactPoints[i].y * Constants.BOX_TO_WORLD));
+		}
 		ouchSound.play();
 	}
 
@@ -136,9 +208,11 @@ public class Cat extends Model {
 	 *
 	 * @param force
 	 *            the force
+	 * @param point
+	 *            the point
 	 */
-	public void shoot(Vector2 force) {
-		body.applyForceToCenter(force, true);
+	public void shoot(Vector2 force, Vector2 point) {
+		body.applyForce(force, point, true);
 		shootSound.setVolume(shootSound.play(), 1);
 	}
 
@@ -190,6 +264,15 @@ public class Cat extends Model {
 	 */
 	public void setLinearVelocity(float vX, float vY) {
 		body.setLinearVelocity(vX, vY);
+	}
+
+	/**
+	 * Gets the position.
+	 *
+	 * @return the position
+	 */
+	public Vector2 getPosition() {
+		return body.getPosition();
 	}
 
 	/**

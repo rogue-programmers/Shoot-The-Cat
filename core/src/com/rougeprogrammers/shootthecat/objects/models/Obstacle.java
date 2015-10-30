@@ -1,6 +1,7 @@
 package com.rougeprogrammers.shootthecat.objects.models;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.rougeprogrammers.shootthecat.objects.Cat;
 import com.rougeprogrammers.shootthecat.stages.GameStage;
@@ -10,6 +11,9 @@ import com.rougeprogrammers.shootthecat.stages.GameStage;
  * The Class Obstacle.
  */
 public abstract class Obstacle extends Model implements Disposable {
+
+	/** The Constant OBSTACLES_DENSITY. */
+	public static final float DENSITY = 0.6f;
 
 	/**
 	 * Instantiates a new obstacle.
@@ -35,7 +39,7 @@ public abstract class Obstacle extends Model implements Disposable {
 	 * @param cat
 	 *            the cat
 	 */
-	public abstract void action(Cat cat);
+	public abstract void action(Cat cat, Vector2[] contactPoints);
 
 	/*
 	 * (non-Javadoc)

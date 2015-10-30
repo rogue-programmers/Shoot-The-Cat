@@ -16,6 +16,18 @@ public class Cannon extends SimpleModel {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -6574197808750875836L;
+	
+	/** The Constant CANNON_WIDTH. */
+	public static final float WIDTH = 300;
+
+	/** The Constant CANNON_HEIGHT. */
+	public static final float HEIGHT = 200;
+
+	/** The Constant CANNON_X. */
+	public static final float X = 200;
+
+	/** The Constant CANNON_Y. */
+	public static final float Y = Ground.Y + (Ground.HEIGHT + HEIGHT) / 2;
 
 	/** The exploded. */
 	private boolean exploded = false;
@@ -36,8 +48,8 @@ public class Cannon extends SimpleModel {
 	 * @param height
 	 *            the height
 	 */
-	public Cannon(float x, float y, float width, float height) {
-		super(x, y, width, height);
+	public Cannon() {
+		super(X, Y, WIDTH, HEIGHT);
 		textureRegion = Main.assets.getCannonTextureRegion();
 		fireSound = Main.assets.getCannonFireSound();
 		effect = new ParticleEffect();
@@ -55,21 +67,16 @@ public class Cannon extends SimpleModel {
 	public void explode(Cat cat) {
 		exploded = true;
 		fireSound.setVolume(fireSound.play(), 0.1f);
-		cat.shoot(new Vector2(250, 400));
+		// cat.shoot(new Vector2(250, 400));
+		cat.shoot(new Vector2(2, 4), new Vector2(0, 0));
 		Gdx.app.log(TAG, "exploded");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.rougeprogrammers.shootthecat.objects.models.SimpleModel#draw(com.
-	 * badlogic.gdx.graphics.g2d.Batch)
-	 */
-	public void draw(Batch batch, float delta) {
+	@Override
+	public void draw(Batch batch) {
 		super.draw(batch);
 		if (exploded) {
-			effect.draw(batch, delta);
+			effect.draw(batch, Math.max(1 / 60f, Gdx.graphics.getDeltaTime()));
 		}
 	}
 
