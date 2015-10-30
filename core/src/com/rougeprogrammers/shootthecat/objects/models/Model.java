@@ -1,5 +1,6 @@
 package com.rougeprogrammers.shootthecat.objects.models;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -42,6 +43,7 @@ public abstract class Model extends Actor {
 		setOrigin(width / 2, height / 2);
 		body = createBody(x, y);
 		this.gameStage.addActor(this);
+		Gdx.app.log(TAG, "created");
 	}
 
 	/**

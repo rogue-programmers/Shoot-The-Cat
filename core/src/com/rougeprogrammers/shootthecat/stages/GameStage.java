@@ -1,6 +1,5 @@
 package com.rougeprogrammers.shootthecat.stages;
 
-import static com.rougeprogrammers.shootthecat.utils.Constants.BOX_TO_WORLD;
 import static com.rougeprogrammers.shootthecat.utils.Constants.FPS;
 import static com.rougeprogrammers.shootthecat.utils.Constants.GRAVITY;
 import static com.rougeprogrammers.shootthecat.utils.Constants.HEIGHT;
@@ -8,10 +7,7 @@ import static com.rougeprogrammers.shootthecat.utils.Constants.WIDTH;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -28,10 +24,11 @@ import com.rougeprogrammers.shootthecat.objects.Cat;
 import com.rougeprogrammers.shootthecat.objects.Ground;
 import com.rougeprogrammers.shootthecat.objects.models.ObjectType;
 import com.rougeprogrammers.shootthecat.objects.models.Obstacle;
+import com.rougeprogrammers.shootthecat.objects.obstacles.RunPower;
 import com.rougeprogrammers.shootthecat.objects.obstacles.Spring;
 import com.rougeprogrammers.shootthecat.objects.obstacles.TNT;
 import com.rougeprogrammers.shootthecat.objects.obstacles.Thorn;
-import com.rougeprogrammers.shootthecat.screens.GameScreen;
+import com.rougeprogrammers.shootthecat.screens.ScreenModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -66,6 +63,7 @@ public class GameStage extends Stage implements ContactListener {
 	/** The cat. */
 	private Cat cat;
 
+	/** The contact points. */
 	public Vector2[] contactPoints;
 
 	/** The obstacle. */
@@ -77,21 +75,24 @@ public class GameStage extends Stage implements ContactListener {
 	/** The game started. */
 	public boolean gameStarted;
 
-	private ShapeRenderer shapeRenderer;
-
-	private boolean fading;
+	/** The screen. */
+	private ScreenModel screen;
 
 	/**
 	 * Instantiates a new game stage.
+	 *
+	 * @param screen
+	 *            the game screen
+	 * @param camera
+	 *            the camera
 	 */
-	public GameStage(GameScreen gameScreen) {
-		super(new ScalingViewport(Scaling.stretch, WIDTH, HEIGHT, new OrthographicCamera(WIDTH, HEIGHT)));
-		camera = (OrthographicCamera) getCamera();
+	public GameStage(ScreenModel screen, OrthographicCamera camera) {
+		super(new ScalingViewport(Scaling.stretch, WIDTH, HEIGHT, camera));
+		this.screen = screen;
+		this.camera = camera;
 		world = new World(GRAVITY, true);
 		world.setContactListener(this);
 		debugRenderer = new Box2DDebugRenderer();
-		shapeRenderer = new ShapeRenderer();
-		shapeRenderer.setProjectionMatrix(camera.combined);
 		createObjects();
 		Gdx.input.setInputProcessor(this);
 		Gdx.app.log(TAG, "created");
@@ -130,10 +131,10 @@ public class GameStage extends Stage implements ContactListener {
 			cannon.explode(cat);
 			startGame();
 		} else {
-			if (cat.getRestitution() == 0) {
-				cat.setRestitution(Cat.RESTITUTION);
-			}
-			cat.shoot(new Vector2(30, 100), cat.getPosition());
+			// if (cat.getRestitution() == 0) {
+			// cat.setRestitution(Cat.RESTITUTION);
+			// }
+			cat.shoot(new Vector2(20, 40), cat.getPosition());
 		}
 		return true;
 	}
@@ -190,8 +191,11 @@ public class GameStage extends Stage implements ContactListener {
 		return true;
 	}
 
+	/**
+	 * Pause.
+	 */
 	private void pause() {
-
+		screen.fadeIn();
 	}
 
 	/*
@@ -209,7 +213,6 @@ public class GameStage extends Stage implements ContactListener {
 			if (cat.getX() > WIDTH / 2) {
 				updateCamera();
 			}
-
 		}
 		super.act(delta);
 	}
@@ -255,7 +258,7 @@ public class GameStage extends Stage implements ContactListener {
 		if (obstacle != null) {
 			obstacle.dispose();
 		}
-		switch (MathUtils.random(2)) {
+		switch (MathUtils.random(3)) {
 		case 0:
 			obstacle = new TNT(x, this);
 			break;
@@ -266,7 +269,7 @@ public class GameStage extends Stage implements ContactListener {
 			obstacle = new Spring(x, this);
 			break;
 		case 3:
-
+			obstacle = new RunPower(x, this);
 			break;
 		default:
 			break;
@@ -318,16 +321,7 @@ public class GameStage extends Stage implements ContactListener {
 			cannon.draw(getBatch());
 			getBatch().end();
 		}
-		debugRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
-
-		if (fading) {
-			Gdx.gl.glEnable(GL20.GL_BLEND);
-			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-			shapeRenderer.begin(ShapeType.Filled);
-			shapeRenderer.rect(0, 0, WIDTH, HEIGHT);
-			shapeRenderer.end();
-			Gdx.gl.glDisable(GL20.GL_BLEND);
-		}
+		// debugRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
 	}
 
 	/*
@@ -399,8 +393,14 @@ public class GameStage extends Stage implements ContactListener {
 		return world;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.scenes.scene2d.Stage#dispose()
+	 */
 	@Override
 	public void dispose() {
+		world.dispose();
 		super.dispose();
 	}
 

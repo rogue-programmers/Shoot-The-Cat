@@ -20,12 +20,6 @@ public class Assets {
 	/** The logo texture region. */
 	private TextureRegion logoTextureRegion;
 
-	// /** The cat texture region. */
-	// private TextureRegion catTextureRegion;
-
-	/** The grass texture region. */
-	private TextureRegion grassTextureRegion;
-
 	/** The tnt texture region. */
 	private TextureRegion tntTextureRegion;
 
@@ -47,13 +41,19 @@ public class Assets {
 	/** The menu texture region. */
 	private TextureRegion menuTextureRegion;
 
+	/** The blood texture region. */
 	private TextureRegion bloodTextureRegion;
+
+	/** The energy texture region. */
+	private TextureRegion energyTextureRegion;
 
 	/** The buttons texture atlas. */
 	private TextureAtlas buttonsTextureAtlas;
 
+	/** The window textur atlas. */
 	private TextureAtlas windowTexturAtlas;
 
+	/** The cat texture atlas. */
 	private TextureAtlas catTextureAtlas;
 
 	/** The cannon fire sound. */
@@ -103,11 +103,6 @@ public class Assets {
 	 */
 	private void loadTextures() {
 		logoTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("logo.png")));
-		// catTextureRegion = new TextureRegion(new
-		// Texture(Gdx.files.internal("textures/cat.png")));
-		// catTextureRegion = new TextureRegion(new
-		// Texture(Gdx.files.internal("cat.png")));
-		grassTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/grass.png")));
 		tntTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/tnt.png")));
 		explosionTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/exploded_tnt.png")));
 		backgroundTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/background.jpg")));
@@ -116,6 +111,7 @@ public class Assets {
 		springTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/spring.png")));
 		menuTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/menu_background.jpg")));
 		bloodTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/blood.png")));
+		energyTextureRegion = new TextureRegion(new Texture(Gdx.files.internal("textures/energy.png")));
 		buttonsTextureAtlas = new TextureAtlas(Gdx.files.internal("atlases/buttons.pack"));
 		windowTexturAtlas = new TextureAtlas(Gdx.files.internal("atlases/window_atlas.pack"));
 		catTextureAtlas = new TextureAtlas(Gdx.files.internal("atlases/cat.pack"));
@@ -163,24 +159,6 @@ public class Assets {
 	 */
 	public TextureRegion getExplosionTextureRegion() {
 		return explosionTextureRegion;
-	}
-
-	// /**
-	// * Gets the cat texture region.
-	// *
-	// * @return the cat texture region
-	// */
-	// public TextureRegion getCatTextureRegion() {
-	// return catTextureRegion;
-	// }
-
-	/**
-	 * Gets the grass texture region.
-	 *
-	 * @return the grass texture region
-	 */
-	public TextureRegion getGrassTextureRegion() {
-		return grassTextureRegion;
 	}
 
 	/**
@@ -237,8 +215,22 @@ public class Assets {
 		return menuTextureRegion;
 	}
 
+	/**
+	 * Gets the blood texture region.
+	 *
+	 * @return the blood texture region
+	 */
 	public TextureRegion getBloodTextureRegion() {
 		return bloodTextureRegion;
+	}
+
+	/**
+	 * Gets the energy texture region.
+	 *
+	 * @return the energy texture region
+	 */
+	public TextureRegion getEnergyTextureRegion() {
+		return energyTextureRegion;
 	}
 
 	/**
@@ -250,10 +242,20 @@ public class Assets {
 		return buttonsTextureAtlas;
 	}
 
+	/**
+	 * Gets the window textur atlas.
+	 *
+	 * @return the window textur atlas
+	 */
 	public TextureAtlas getWindowTexturAtlas() {
 		return windowTexturAtlas;
 	}
 
+	/**
+	 * Gets the cat texture atlas.
+	 *
+	 * @return the cat texture atlas
+	 */
 	public TextureAtlas getCatTextureAtlas() {
 		return catTextureAtlas;
 	}

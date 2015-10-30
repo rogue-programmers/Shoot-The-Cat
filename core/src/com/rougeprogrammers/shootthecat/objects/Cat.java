@@ -1,6 +1,5 @@
 package com.rougeprogrammers.shootthecat.objects;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
@@ -22,11 +21,17 @@ import com.rougeprogrammers.shootthecat.objects.models.ObjectType;
 import com.rougeprogrammers.shootthecat.stages.GameStage;
 import com.rougeprogrammers.shootthecat.utils.Constants;
 
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenAccessor;
+import aurelienribon.tweenengine.TweenCallback;
+import aurelienribon.tweenengine.TweenManager;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class Cat.
  */
-public class Cat extends Model {
+public class Cat extends Model implements TweenAccessor<Cat>, TweenCallback {
 
 	/** The Constant CAT_WIDTH. */
 	public static final float WIDTH = 75;
@@ -41,7 +46,7 @@ public class Cat extends Model {
 	public static final float Y = 200;
 
 	/** The Constant CAT_DENSITY. */
-	public static final float DENSITY = 0.9f;
+	public static final float DENSITY = 0.5f;
 
 	/** The Constant CAT_FRICTION. */
 	public static final float FRICTION = 0.1f;
@@ -51,6 +56,9 @@ public class Cat extends Model {
 
 	/** The Constant CAT_OUCH_SPEED. */
 	public static final float OUCH_SPEED = -5;
+
+	/** The Constant ROTATION_TYPE. */
+	private static final int ROTATION_TYPE = 0;
 
 	/** The shoot sound. */
 	private Sound shootSound;
@@ -79,6 +87,9 @@ public class Cat extends Model {
 	/** The running. */
 	private boolean running;
 
+	/** The tween manager. */
+	private TweenManager tweenManager;
+
 	/**
 	 * Instantiates a new cat.
 	 *
@@ -94,7 +105,8 @@ public class Cat extends Model {
 		textureRegion = atlasRegions.get(6);
 		animation = new Animation(0.2f, atlasRegions, PlayMode.LOOP);
 		bloods = new Array<Blood>();
-		Gdx.app.log(TAG, "created");
+		Tween.registerAccessor(getClass(), this);
+		tweenManager = new TweenManager();
 	}
 
 	/*
@@ -144,7 +156,10 @@ public class Cat extends Model {
 		if (running) {
 			stateTime += delta;
 			textureRegion = animation.getKeyFrame(stateTime);
+			setRotation(0);
+			setLinearVelocity(5, getVelocityY());
 		}
+		tweenManager.update(delta);
 	}
 
 	/*
@@ -164,10 +179,19 @@ public class Cat extends Model {
 	}
 
 	/**
+	 * Start running.
+	 */
+	public void startRunning() {
+		Tween.to(this, ROTATION_TYPE, 0.5f).target(0).setUserData("angle").setCallback(this).start(tweenManager);
+	}
+
+	/**
 	 * Die.
 	 */
 	public void die() {
+		running = false;
 		textureRegion = atlas.findRegion("cat6");
+		body.setAwake(false);
 	}
 
 	/**
@@ -212,6 +236,7 @@ public class Cat extends Model {
 	 *            the point
 	 */
 	public void shoot(Vector2 force, Vector2 point) {
+		// body.applyForceToCenter(force, true);
 		body.applyForce(force, point, true);
 		shootSound.setVolume(shootSound.play(), 1);
 	}
@@ -266,6 +291,16 @@ public class Cat extends Model {
 		body.setLinearVelocity(vX, vY);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.scenes.scene2d.Actor#setRotation(float)
+	 */
+	@Override
+	public void setRotation(float degrees) {
+		body.setTransform(getPosition(), degrees * MathUtils.degreesToRadians);
+	}
+
 	/**
 	 * Gets the position.
 	 *
@@ -282,6 +317,54 @@ public class Cat extends Model {
 	 */
 	public Body getBody() {
 		return body;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see aurelienribon.tweenengine.TweenAccessor#getValues(java.lang.Object,
+	 * int, float[])
+	 */
+	@Override
+	public int getValues(Cat target, int tweenType, float[] returnValues) {
+		switch (tweenType) {
+		case ROTATION_TYPE:
+			returnValues[0] = target.getRotation();
+			break;
+		default:
+			break;
+		}
+		return returnValues.length;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see aurelienribon.tweenengine.TweenAccessor#setValues(java.lang.Object,
+	 * int, float[])
+	 */
+	@Override
+	public void setValues(Cat target, int tweenType, float[] newValues) {
+		switch (tweenType) {
+		case ROTATION_TYPE:
+			target.setRotation(newValues[0]);
+			break;
+		default:
+			break;
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see aurelienribon.tweenengine.TweenCallback#onEvent(int,
+	 * aurelienribon.tweenengine.BaseTween)
+	 */
+	@Override
+	public void onEvent(int type, BaseTween<?> source) {
+		if (type == TweenCallback.COMPLETE && source.getUserData().equals("angle")) {
+			running = true;
+		}
 	}
 
 }

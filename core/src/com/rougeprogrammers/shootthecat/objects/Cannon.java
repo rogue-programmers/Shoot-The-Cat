@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.rougeprogrammers.shootthecat.Main;
 import com.rougeprogrammers.shootthecat.objects.models.SimpleModel;
@@ -16,7 +17,7 @@ public class Cannon extends SimpleModel {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -6574197808750875836L;
-	
+
 	/** The Constant CANNON_WIDTH. */
 	public static final float WIDTH = 300;
 
@@ -32,21 +33,14 @@ public class Cannon extends SimpleModel {
 	/** The exploded. */
 	private boolean exploded = false;
 
+	/** The effect. */
 	private ParticleEffect effect;
 
+	/** The fire sound. */
 	private Sound fireSound;
 
 	/**
 	 * Instantiates a new cannon.
-	 *
-	 * @param x
-	 *            the x
-	 * @param y
-	 *            the y
-	 * @param width
-	 *            the width
-	 * @param height
-	 *            the height
 	 */
 	public Cannon() {
 		super(X, Y, WIDTH, HEIGHT);
@@ -56,22 +50,28 @@ public class Cannon extends SimpleModel {
 		effect.load(Gdx.files.internal("particle/cannon.p"), Gdx.files.internal("particle"));
 		effect.setPosition(x + 150, y + 70);
 		effect.start();
-		Gdx.app.log(TAG, "created");
 	}
 
 	/**
 	 * Explode.
-	 * 
+	 *
 	 * @param cat
+	 *            the cat
 	 */
 	public void explode(Cat cat) {
 		exploded = true;
 		fireSound.setVolume(fireSound.play(), 0.1f);
-		// cat.shoot(new Vector2(250, 400));
-		cat.shoot(new Vector2(2, 4), new Vector2(0, 0));
+		cat.shoot(new Vector2(MathUtils.random(100, 150), MathUtils.random(100, 200)), cat.getPosition().add(2, 2));
 		Gdx.app.log(TAG, "exploded");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.rougeprogrammers.shootthecat.objects.models.SimpleModel#draw(com.
+	 * badlogic.gdx.graphics.g2d.Batch)
+	 */
 	@Override
 	public void draw(Batch batch) {
 		super.draw(batch);

@@ -1,6 +1,5 @@
 package com.rougeprogrammers.shootthecat.objects;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -50,25 +49,13 @@ public class Ground extends Model {
 	/**
 	 * Instantiates a new ground.
 	 *
-	 * @param x
-	 *            the x
-	 * @param y
-	 *            the y
-	 * @param width
-	 *            the width
-	 * @param height
-	 *            the height
 	 * @param gameStage
 	 *            the game stage
 	 */
 	public Ground(GameStage gameStage) {
 		super(X, Y, WIDTH, HEIGHT, gameStage);
-		// rect = new Rectangle(X, Y + HEIGHT * (BODY_TEXTURE_SCALER - 1) / 2,
-		// WIDTH, HEIGHT * BODY_TEXTURE_SCALER);
 		rect = new Rectangle(X, Constants.HEIGHT / 2, WIDTH, Constants.HEIGHT);
-		// textureRegion = Main.assets.getGrassTextureRegion();
 		textureRegion = Main.assets.getBackgroundTextureRegion();
-		Gdx.app.log(TAG, "created");
 	}
 
 	/*

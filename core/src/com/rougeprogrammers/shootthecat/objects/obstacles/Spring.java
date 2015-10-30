@@ -32,8 +32,8 @@ public class Spring extends Obstacle {
 	/** The Constant SPRING_Y. */
 	public static final float Y = Ground.Y + (Ground.HEIGHT + HEIGHT) / 2;
 
-	/** The Constant SPRING_FORCE. 80*/
-	public static final Vector2 FORCE = new Vector2(0, 200);
+	/** The Constant SPRING_FORCE. */
+	public static final Vector2 FORCE = new Vector2(20, 100);
 
 	/** The texture region. */
 	private TextureRegion textureRegion;
@@ -46,12 +46,6 @@ public class Spring extends Obstacle {
 	 *
 	 * @param x
 	 *            the x
-	 * @param y
-	 *            the y
-	 * @param width
-	 *            the width
-	 * @param height
-	 *            the height
 	 * @param gameStage
 	 *            the game stage
 	 */
@@ -59,7 +53,6 @@ public class Spring extends Obstacle {
 		super(x, Y, WIDTH, HEIGHT, gameStage);
 		textureRegion = Main.assets.getSpringTextureRegion();
 		sound = Main.assets.getSpringSound();
-		Gdx.app.log(TAG, "created");
 	}
 
 	/*

@@ -43,12 +43,6 @@ public class Thorn extends Obstacle {
 	 *
 	 * @param x
 	 *            the x
-	 * @param y
-	 *            the y
-	 * @param width
-	 *            the width
-	 * @param height
-	 *            the height
 	 * @param gameStage
 	 *            the game stage
 	 */
@@ -56,7 +50,6 @@ public class Thorn extends Obstacle {
 		super(x, Y, WIDTH, HEIGHT, gameStage);
 		rect = new Rectangle(x, Y + HEIGHT / 4, WIDTH * 2, HEIGHT * 1.5f);
 		textureRegion = Main.assets.getThornTextureRegion();
-		Gdx.app.log(TAG, "created");
 	}
 
 	/*
@@ -89,9 +82,8 @@ public class Thorn extends Obstacle {
 	@Override
 	public void action(Cat cat, Vector2[] contactPoints) {
 		body.setActive(false);
-		cat.setLinearVelocity(0, cat.getVelocityY());
-		cat.setRestitution(0);
 		cat.ouch(contactPoints);
+		cat.die();
 		Gdx.app.log(TAG, "acted");
 	}
 

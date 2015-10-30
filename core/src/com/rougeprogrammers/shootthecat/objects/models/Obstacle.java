@@ -38,6 +38,8 @@ public abstract class Obstacle extends Model implements Disposable {
 	 *
 	 * @param cat
 	 *            the cat
+	 * @param contactPoints
+	 *            the contact points
 	 */
 	public abstract void action(Cat cat, Vector2[] contactPoints);
 

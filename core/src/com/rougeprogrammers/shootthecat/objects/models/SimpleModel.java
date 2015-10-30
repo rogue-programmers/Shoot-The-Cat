@@ -35,6 +35,7 @@ public class SimpleModel extends Rectangle implements Disposable {
 	 */
 	public SimpleModel(float x, float y, float width, float height) {
 		super(x, y, width, height);
+		Gdx.app.log(TAG, "created");
 	}
 
 	/**
@@ -44,7 +45,7 @@ public class SimpleModel extends Rectangle implements Disposable {
 	 *            the delta
 	 */
 	public void update(float delta) {
-		
+
 	}
 
 	/**
