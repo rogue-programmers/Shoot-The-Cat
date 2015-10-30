@@ -131,9 +131,6 @@ public class GameStage extends Stage implements ContactListener {
 			cannon.explode(cat);
 			startGame();
 		} else {
-			// if (cat.getRestitution() == 0) {
-			// cat.setRestitution(Cat.RESTITUTION);
-			// }
 			cat.shoot(new Vector2(20, 40), cat.getPosition());
 		}
 		return true;
@@ -195,6 +192,7 @@ public class GameStage extends Stage implements ContactListener {
 	 * Pause.
 	 */
 	private void pause() {
+		gameStarted = false;
 		screen.fadeIn();
 	}
 
