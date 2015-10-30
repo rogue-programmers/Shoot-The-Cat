@@ -180,7 +180,6 @@ public class MenuStage extends Stage {
 
 			break;
 		case EXIT:
-			dispose();
 			Gdx.app.exit();
 			break;
 		default:

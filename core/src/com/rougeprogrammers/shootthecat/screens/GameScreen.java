@@ -12,7 +12,7 @@ import aurelienribon.tweenengine.BaseTween;
 /**
  * The Class GScreen.
  */
-public class GScreen extends ScreenModel {
+public class GameScreen extends ScreenModel {
 
 	/**
 	 * Instantiates a new g screen.
@@ -22,7 +22,7 @@ public class GScreen extends ScreenModel {
 	 * @param camera
 	 *            the camera
 	 */
-	public GScreen(Game game, OrthographicCamera camera) {
+	public GameScreen(Game game, OrthographicCamera camera) {
 		super(game, camera);
 		Gdx.input.setCatchBackKey(true);
 		stage = new GameStage(this, camera);

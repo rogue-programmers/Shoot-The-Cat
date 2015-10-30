@@ -12,13 +12,14 @@ import com.rougeprogrammers.shootthecat.Main;
 import com.rougeprogrammers.shootthecat.utils.Constants;
 
 import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class RScreen.
  */
-public class RScreen extends ScreenModel {
+public class RougesScreen extends ScreenModel {
 
 	/** The batch. */
 	private SpriteBatch batch;
@@ -37,13 +38,19 @@ public class RScreen extends ScreenModel {
 	 * @param camera
 	 *            the camera
 	 */
-	public RScreen(Game game, OrthographicCamera camera) {
+	public RougesScreen(Game game, OrthographicCamera camera) {
 		super(game, camera);
 		batch = new SpriteBatch();
 		batch.setProjectionMatrix(camera.combined);
 		logo = Main.assets.getLogoTextureRegion();
 		rect = new Rectangle(Constants.WIDTH / 2, Constants.HEIGHT / 2, 267, 363);
 		stage = new Stage();
+	}
+	
+	@Override
+	public void fadeOut() {
+		fading = true;
+		Tween.to(this, FADE_TYPE, 2f).target(0).setUserData("fade_out").setCallback(this).delay(1f).start(tweenManager);
 	}
 
 	/**
@@ -76,7 +83,7 @@ public class RScreen extends ScreenModel {
 				fadeIn();
 			} else if (source.getUserData().equals("fade_in")) {
 				dispose();
-				game.setScreen(new MScreen(game, camera));
+				game.setScreen(new MenuScreen(game, camera));
 			}
 		}
 	}

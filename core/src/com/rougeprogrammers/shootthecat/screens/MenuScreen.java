@@ -15,7 +15,7 @@ import aurelienribon.tweenengine.equations.Back;
 /**
  * The Class MScreen.
  */
-public class MScreen extends ScreenModel {
+public class MenuScreen extends ScreenModel {
 
 	/** The Constant TABLE_X_TYPE. */
 	private static final int TABLE_X_TYPE = 1;
@@ -28,7 +28,7 @@ public class MScreen extends ScreenModel {
 	 * @param camera
 	 *            the camera
 	 */
-	public MScreen(Game game, OrthographicCamera camera) {
+	public MenuScreen(Game game, OrthographicCamera camera) {
 		super(game, camera);
 		stage = new MenuStage(this, camera);
 	}
@@ -68,7 +68,7 @@ public class MScreen extends ScreenModel {
 				Tween.to(this, TABLE_X_TYPE, 1f).target(0).ease(Back.OUT).start(tweenManager);
 			} else if (source.getUserData().equals("fade_in")) {
 				dispose();
-				game.setScreen(new GScreen(game, camera));
+				game.setScreen(new GameScreen(game, camera));
 			}
 		}
 	}
