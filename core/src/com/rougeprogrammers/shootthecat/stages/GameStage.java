@@ -31,6 +31,7 @@ import com.rougeprogrammers.shootthecat.objects.obstacles.Spring;
 import com.rougeprogrammers.shootthecat.objects.obstacles.TNT;
 import com.rougeprogrammers.shootthecat.objects.obstacles.Thorn;
 import com.rougeprogrammers.shootthecat.screens.ScreenModel;
+import com.rougeprogrammers.shootthecat.utils.Constants;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -82,6 +83,7 @@ public class GameStage extends Stage implements ContactListener {
 	public boolean gameStarted;
 
 	/** The screen. */
+	@SuppressWarnings("unused")
 	private ScreenModel screen;
 
 	/**
@@ -204,7 +206,8 @@ public class GameStage extends Stage implements ContactListener {
 	private void pause() {
 		gameStarted = false;
 		// screen.fadeIn();
-		Dialogs d = new Dialogs(cat.getX(), "Test", "Pause");
+		Dialogs d = new Dialogs(cat.getX(), MathUtils.round(cat.getX() * Constants.WORLD_TO_BOX) + " M",
+				"Pause");
 		d.setZIndex(getActors().size);
 		addActor(d);
 	}
@@ -285,13 +288,13 @@ public class GameStage extends Stage implements ContactListener {
 		}
 		switch (MathUtils.random(2)) {
 		case 0:
-			obstacles[index] = new TNT(x, this, index);
+			obstacles[index] = new Spring(x, this, index);
 			break;
 		case 1:
 			obstacles[index] = new Thorn(x, this, index);
 			break;
 		case 2:
-			obstacles[index] = new Spring(x, this, index);
+			obstacles[index] = new TNT(x, this, index);
 			break;
 		default:
 			break;

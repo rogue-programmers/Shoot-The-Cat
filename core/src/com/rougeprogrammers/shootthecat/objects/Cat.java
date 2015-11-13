@@ -183,7 +183,8 @@ public class Cat extends Model implements TweenAccessor<Cat>, TweenCallback {
 	 * Start running.
 	 */
 	public void startRunning() {
-		Tween.to(this, ROTATION_TYPE, 0.5f).target(0).setUserData("angle").setCallback(this).start(tweenManager);
+		Tween.to(this, ROTATION_TYPE, 0.5f).target(MathUtils.round((float) (body.getAngle() / 2 * Math.PI)))
+				.setUserData("angle").setCallback(this).start(tweenManager);
 	}
 
 	/**
@@ -238,7 +239,7 @@ public class Cat extends Model implements TweenAccessor<Cat>, TweenCallback {
 	 */
 	public void shoot(Vector2 force, Vector2 point) {
 		// body.applyForceToCenter(force, true);
-		//body.applyForce(force, point, true);
+		// body.applyForce(force, point, true);
 		body.setLinearVelocity(body.getLinearVelocity().x, 0);
 		float x = MathUtils.random(-0.2f, 0.2f);
 		float y = MathUtils.random(-0.2f, 0.2f);
