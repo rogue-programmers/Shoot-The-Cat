@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.rougeprogrammers.shootthecat.Main;
 import com.rougeprogrammers.shootthecat.objects.models.Model;
 import com.rougeprogrammers.shootthecat.objects.models.ObjectType;
+import com.rougeprogrammers.shootthecat.objects.models.ObjectType.Type;
 import com.rougeprogrammers.shootthecat.stages.GameStage;
 import com.rougeprogrammers.shootthecat.utils.Constants;
 
@@ -20,7 +21,7 @@ import com.rougeprogrammers.shootthecat.utils.Constants;
 public class Ground extends Model {
 
 	/** The Constant GROUND_WIDTH. */
-	public static final float WIDTH = Constants.WIDTH * 1.5f;
+	public static final float WIDTH = Constants.WIDTH * 2f;
 
 	/** The Constant GROUND_HEIGHT. */
 	public static final float HEIGHT = 38;
@@ -44,7 +45,7 @@ public class Ground extends Model {
 	private TextureRegion textureRegion;
 
 	/** The reseted. */
-	public boolean reseted;
+	public boolean shifted;
 
 	/**
 	 * Instantiates a new ground.
@@ -52,9 +53,9 @@ public class Ground extends Model {
 	 * @param gameStage
 	 *            the game stage
 	 */
-	public Ground(GameStage gameStage) {
-		super(X, Y, WIDTH, HEIGHT, gameStage);
-		rect = new Rectangle(X, Constants.HEIGHT / 2, WIDTH, Constants.HEIGHT);
+	public Ground(float x, GameStage gameStage) {
+		super(x, Y, WIDTH, HEIGHT, gameStage, 0);
+		rect = new Rectangle(x, Constants.HEIGHT / 2, WIDTH, Constants.HEIGHT);
 		textureRegion = Main.assets.getBackgroundTextureRegion();
 	}
 
@@ -75,7 +76,7 @@ public class Ground extends Model {
 		shape.setAsBox(getWidth() / 2 * Constants.WORLD_TO_BOX, getHeight() / 2 * Constants.WORLD_TO_BOX);
 		body.createFixture(shape, DENSITY);
 		shape.dispose();
-		body.setUserData(ObjectType.GROUND);
+		body.setUserData(new ObjectType(Type.GROUND));
 		return body;
 	}
 

@@ -24,6 +24,8 @@ public abstract class ScreenModel implements Screen, TweenAccessor<ScreenModel>,
 
 	/** The tag. */
 	protected final String TAG = this.getClass().getSimpleName();
+	
+	public static final float FADE_DELAY = 0.5f;
 
 	/** The Constant FADE_TYPE. */
 	protected static final int FADE_TYPE = 0;
@@ -73,7 +75,7 @@ public abstract class ScreenModel implements Screen, TweenAccessor<ScreenModel>,
 	 */
 	public void fadeOut() {
 		fading = true;
-		Tween.to(this, FADE_TYPE, 2f).target(0).setUserData("fade_out").setCallback(this).start(tweenManager);
+		Tween.to(this, FADE_TYPE, FADE_DELAY).target(0).setUserData("fade_out").setCallback(this).start(tweenManager);
 	}
 
 	/**
@@ -81,7 +83,7 @@ public abstract class ScreenModel implements Screen, TweenAccessor<ScreenModel>,
 	 */
 	public void fadeIn() {
 		fading = true;
-		Tween.to(this, FADE_TYPE, 2f).target(1).setUserData("fade_in").setCallback(this).start(tweenManager);
+		Tween.to(this, FADE_TYPE, FADE_DELAY).target(1).setUserData("fade_in").setCallback(this).start(tweenManager);
 	}
 
 	/*

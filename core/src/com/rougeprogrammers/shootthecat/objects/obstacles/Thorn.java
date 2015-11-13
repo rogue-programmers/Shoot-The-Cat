@@ -12,8 +12,9 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.rougeprogrammers.shootthecat.Main;
 import com.rougeprogrammers.shootthecat.objects.Cat;
 import com.rougeprogrammers.shootthecat.objects.Ground;
-import com.rougeprogrammers.shootthecat.objects.models.ObjectType;
 import com.rougeprogrammers.shootthecat.objects.models.Obstacle;
+import com.rougeprogrammers.shootthecat.objects.models.ObjectType;
+import com.rougeprogrammers.shootthecat.objects.models.ObjectType.Type;
 import com.rougeprogrammers.shootthecat.stages.GameStage;
 import com.rougeprogrammers.shootthecat.utils.Constants;
 
@@ -46,8 +47,8 @@ public class Thorn extends Obstacle {
 	 * @param gameStage
 	 *            the game stage
 	 */
-	public Thorn(float x, GameStage gameStage) {
-		super(x, Y, WIDTH, HEIGHT, gameStage);
+	public Thorn(float x, GameStage gameStage, int index) {
+		super(x, Y, WIDTH, HEIGHT, gameStage, index);
 		rect = new Rectangle(x, Y + HEIGHT / 4, WIDTH * 2, HEIGHT * 1.5f);
 		textureRegion = Main.assets.getThornTextureRegion();
 	}
@@ -69,7 +70,7 @@ public class Thorn extends Obstacle {
 		shape.setAsBox(getWidth() / 2 * Constants.WORLD_TO_BOX, getHeight() / 2 * Constants.WORLD_TO_BOX);
 		body.createFixture(shape, Obstacle.DENSITY);
 		shape.dispose();
-		body.setUserData(ObjectType.THORN);
+		body.setUserData(new ObjectType(Type.THORN, index));
 		return body;
 	}
 

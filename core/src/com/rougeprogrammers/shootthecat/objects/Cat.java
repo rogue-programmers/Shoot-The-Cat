@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Array;
 import com.rougeprogrammers.shootthecat.Main;
 import com.rougeprogrammers.shootthecat.objects.models.Model;
 import com.rougeprogrammers.shootthecat.objects.models.ObjectType;
+import com.rougeprogrammers.shootthecat.objects.models.ObjectType.Type;
 import com.rougeprogrammers.shootthecat.stages.GameStage;
 import com.rougeprogrammers.shootthecat.utils.Constants;
 
@@ -97,7 +98,7 @@ public class Cat extends Model implements TweenAccessor<Cat>, TweenCallback {
 	 *            the game stage
 	 */
 	public Cat(GameStage gameStage) {
-		super(X, Y, WIDTH, HEIGHT, gameStage);
+		super(X, Y, WIDTH, HEIGHT, gameStage, 0);
 		shootSound = Main.assets.getCatShootSound();
 		ouchSound = Main.assets.getCatOuchSound();
 		atlas = Main.assets.getCatTextureAtlas();
@@ -132,7 +133,7 @@ public class Cat extends Model implements TweenAccessor<Cat>, TweenCallback {
 		fixtureDef.restitution = RESTITUTION;
 		body.createFixture(fixtureDef);
 		shape.dispose();
-		body.setUserData(ObjectType.CAT);
+		body.setUserData(new ObjectType(Type.CAT));
 		return body;
 	}
 
@@ -237,7 +238,11 @@ public class Cat extends Model implements TweenAccessor<Cat>, TweenCallback {
 	 */
 	public void shoot(Vector2 force, Vector2 point) {
 		// body.applyForceToCenter(force, true);
-		body.applyForce(force, point, true);
+		//body.applyForce(force, point, true);
+		body.setLinearVelocity(body.getLinearVelocity().x, 0);
+		float x = MathUtils.random(-0.2f, 0.2f);
+		float y = MathUtils.random(-0.2f, 0.2f);
+		body.applyLinearImpulse(force, body.getWorldCenter().add(x, y), true);
 		shootSound.setVolume(shootSound.play(), 1);
 	}
 

@@ -1,5 +1,6 @@
 package com.rougeprogrammers.shootthecat.stages;
 
+import static com.rougeprogrammers.shootthecat.utils.Constants.BOX_TO_WORLD;
 import static com.rougeprogrammers.shootthecat.utils.Constants.FPS;
 import static com.rougeprogrammers.shootthecat.utils.Constants.GRAVITY;
 import static com.rougeprogrammers.shootthecat.utils.Constants.HEIGHT;
@@ -23,6 +24,7 @@ import com.rougeprogrammers.shootthecat.objects.Cannon;
 import com.rougeprogrammers.shootthecat.objects.Cat;
 import com.rougeprogrammers.shootthecat.objects.Ground;
 import com.rougeprogrammers.shootthecat.objects.models.ObjectType;
+import com.rougeprogrammers.shootthecat.objects.models.ObjectType.Type;
 import com.rougeprogrammers.shootthecat.objects.models.Obstacle;
 import com.rougeprogrammers.shootthecat.objects.obstacles.RunPower;
 import com.rougeprogrammers.shootthecat.objects.obstacles.Spring;
@@ -67,7 +69,11 @@ public class GameStage extends Stage implements ContactListener {
 	public Vector2[] contactPoints;
 
 	/** The obstacle. */
-	private Obstacle obstacle;
+	private Obstacle[] obstacles = new Obstacle[3];
+
+	private int obstacleIndex;
+
+	// private Obstacle obstacle2;
 
 	/** The contacted. */
 	private boolean contacted = false;
@@ -102,10 +108,13 @@ public class GameStage extends Stage implements ContactListener {
 	 * Create objects.
 	 */
 	private void createObjects() {
-		firstGround = new Ground(this);
-		firstGround.reseted = true;
-		secondGround = new Ground(this);
+		firstGround = new Ground(Ground.X, this);
+		firstGround.shifted = true;
+		secondGround = new Ground(Ground.X + Ground.WIDTH, this);
 		cannon = new Cannon();
+		for (int i = 0; i < obstacles.length; i++) {
+			createNewObstacle(1.5f * WIDTH + WIDTH * i, i);
+		}
 	}
 
 	/**
@@ -126,12 +135,12 @@ public class GameStage extends Stage implements ContactListener {
 		x = getScaledX(x);
 		y = getScaledY(y);
 		Gdx.app.log(TAG, "touched (" + x + ", " + y + ")");
-		if (!gameStarted) {
+		if (cat == null) {
 			cat = new Cat(this);
 			cannon.explode(cat);
 			startGame();
 		} else {
-			cat.shoot(new Vector2(20, 40), cat.getPosition());
+			cat.shoot(new Vector2(0.5f, 1), cat.getPosition());
 		}
 		return true;
 	}
@@ -176,7 +185,8 @@ public class GameStage extends Stage implements ContactListener {
 			break;
 		case Keys.ESCAPE:
 		case Keys.BACK:
-			pause();
+			gameStarted = false;
+			addActor(new Dialogs(cat == null ? WIDTH / 2 : cat.getX(), "", "Pause"));
 			break;
 		case Keys.RIGHT:
 			break;
@@ -193,7 +203,10 @@ public class GameStage extends Stage implements ContactListener {
 	 */
 	private void pause() {
 		gameStarted = false;
-		screen.fadeIn();
+		// screen.fadeIn();
+		Dialogs d = new Dialogs(cat.getX(), "Test", "Pause");
+		d.setZIndex(getActors().size);
+		addActor(d);
 	}
 
 	/*
@@ -207,12 +220,24 @@ public class GameStage extends Stage implements ContactListener {
 			cat.act(delta);
 			handleContact();
 			updateGround();
+			updateObstacles();
 			updateWorld(delta);
 			if (cat.getX() > WIDTH / 2) {
 				updateCamera();
 			}
+			if (cat.getVelocityX() == 0) {
+				pause();
+			}
 		}
 		super.act(delta);
+	}
+
+	private void updateObstacles() {
+		for (int i = 0; i < obstacles.length; i++) {
+			if (cat.getX() - obstacles[i].getX() > WIDTH) {
+				createNewObstacle(cat.getX() + 2 * WIDTH, i);
+			}
+		}
 	}
 
 	/**
@@ -220,7 +245,7 @@ public class GameStage extends Stage implements ContactListener {
 	 */
 	private void handleContact() {
 		if (contacted) {
-			obstacle.action(cat, contactPoints);
+			obstacles[obstacleIndex].action(cat, contactPoints);
 			contacted = false;
 		}
 	}
@@ -229,20 +254,18 @@ public class GameStage extends Stage implements ContactListener {
 	 * Update ground.
 	 */
 	private void updateGround() {
-		if (!firstGround.reseted && cat.getX() >= secondGround.getX()) {
+		if (!firstGround.shifted && cat.getX() >= secondGround.getX()) {
 			removeCannon();
 			firstGround.setX(secondGround.getX() + Ground.WIDTH);
-			firstGround.reseted = true;
-			secondGround.reseted = false;
+			firstGround.shifted = true;
+			secondGround.shifted = false;
 			Gdx.app.log(TAG, "first ground shifted");
-			createNewObstacle(firstGround.getX() - Ground.WIDTH / 2);
 		}
-		if (!secondGround.reseted && cat.getX() >= firstGround.getX()) {
+		if (!secondGround.shifted && cat.getX() >= firstGround.getX()) {
 			secondGround.setX(firstGround.getX() + Ground.WIDTH);
-			secondGround.reseted = true;
-			firstGround.reseted = false;
+			secondGround.shifted = true;
+			firstGround.shifted = false;
 			Gdx.app.log(TAG, "second ground shifted");
-			createNewObstacle(secondGround.getX() - Ground.WIDTH / 2);
 		}
 	}
 
@@ -252,22 +275,23 @@ public class GameStage extends Stage implements ContactListener {
 	 * @param x
 	 *            the x
 	 */
-	private void createNewObstacle(float x) {
-		if (obstacle != null) {
-			obstacle.dispose();
+	private void createNewObstacle(float x, int index) {
+		if (obstacles[index] != null) {
+			obstacles[index].dispose();
 		}
-		switch (MathUtils.random(3)) {
+		if (MathUtils.randomBoolean(0.1f)) {
+			obstacles[index] = new RunPower(x, this, index);
+			return;
+		}
+		switch (MathUtils.random(2)) {
 		case 0:
-			obstacle = new TNT(x, this);
+			obstacles[index] = new TNT(x, this, index);
 			break;
 		case 1:
-			obstacle = new Thorn(x, this);
+			obstacles[index] = new Thorn(x, this, index);
 			break;
 		case 2:
-			obstacle = new Spring(x, this);
-			break;
-		case 3:
-			obstacle = new RunPower(x, this);
+			obstacles[index] = new Spring(x, this, index);
 			break;
 		default:
 			break;
@@ -319,7 +343,7 @@ public class GameStage extends Stage implements ContactListener {
 			cannon.draw(getBatch());
 			getBatch().end();
 		}
-		// debugRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
+		debugRenderer.render(world, camera.combined.cpy().scl(BOX_TO_WORLD));
 	}
 
 	/*
@@ -333,12 +357,12 @@ public class GameStage extends Stage implements ContactListener {
 	public void beginContact(Contact contact) {
 		ObjectType a = (ObjectType) contact.getFixtureA().getBody().getUserData();
 		ObjectType b = (ObjectType) contact.getFixtureB().getBody().getUserData();
-		if (a != ObjectType.GROUND && b != ObjectType.GROUND) {
+		contactPoints = contact.getWorldManifold().getPoints();
+		if (a.type != Type.GROUND && b.type != Type.GROUND) {
+			obstacleIndex = a.type == Type.CAT ? b.index : a.index;
 			contacted = true;
-			contactPoints = contact.getWorldManifold().getPoints();
 			Gdx.app.log(TAG, "cat contacted with obstacle");
 		} else if (cat.getVelocityY() <= Cat.OUCH_SPEED) {
-			contactPoints = contact.getWorldManifold().getPoints();
 			cat.ouch(contactPoints);
 			Gdx.app.log(TAG, "cat contacted with ground");
 		}

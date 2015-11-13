@@ -180,7 +180,7 @@ public class MenuStage extends Stage {
 
 			break;
 		case EXIT:
-			Gdx.app.exit();
+			addActor(new Dialogs(Constants.WIDTH / 2, "", "Exit"));
 			break;
 		default:
 			break;

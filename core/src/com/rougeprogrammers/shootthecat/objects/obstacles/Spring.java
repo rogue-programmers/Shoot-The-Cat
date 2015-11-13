@@ -12,8 +12,9 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.rougeprogrammers.shootthecat.Main;
 import com.rougeprogrammers.shootthecat.objects.Cat;
 import com.rougeprogrammers.shootthecat.objects.Ground;
-import com.rougeprogrammers.shootthecat.objects.models.ObjectType;
 import com.rougeprogrammers.shootthecat.objects.models.Obstacle;
+import com.rougeprogrammers.shootthecat.objects.models.ObjectType;
+import com.rougeprogrammers.shootthecat.objects.models.ObjectType.Type;
 import com.rougeprogrammers.shootthecat.stages.GameStage;
 import com.rougeprogrammers.shootthecat.utils.Constants;
 
@@ -33,7 +34,7 @@ public class Spring extends Obstacle {
 	public static final float Y = Ground.Y + (Ground.HEIGHT + HEIGHT) / 2;
 
 	/** The Constant SPRING_FORCE. */
-	public static final Vector2 FORCE = new Vector2(20, 100);
+	public static final Vector2 FORCE = new Vector2(0.5f, 3);
 
 	/** The texture region. */
 	private TextureRegion textureRegion;
@@ -49,8 +50,8 @@ public class Spring extends Obstacle {
 	 * @param gameStage
 	 *            the game stage
 	 */
-	public Spring(float x, GameStage gameStage) {
-		super(x, Y, WIDTH, HEIGHT, gameStage);
+	public Spring(float x, GameStage gameStage, int index) {
+		super(x, Y, WIDTH, HEIGHT, gameStage, index);
 		textureRegion = Main.assets.getSpringTextureRegion();
 		sound = Main.assets.getSpringSound();
 	}
@@ -72,7 +73,7 @@ public class Spring extends Obstacle {
 		shape.setAsBox(getWidth() / 2 * Constants.WORLD_TO_BOX, getHeight() / 2 * Constants.WORLD_TO_BOX);
 		body.createFixture(shape, Obstacle.DENSITY);
 		shape.dispose();
-		body.setUserData(ObjectType.SPRING);
+		body.setUserData(new ObjectType(Type.SPRING, index));
 		return body;
 	}
 

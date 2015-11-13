@@ -3,6 +3,8 @@ package com.rougeprogrammers.shootthecat;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.rougeprogrammers.shootthecat.screens.GameScreen;
+import com.rougeprogrammers.shootthecat.screens.MenuScreen;
 import com.rougeprogrammers.shootthecat.screens.RougesScreen;
 import com.rougeprogrammers.shootthecat.utils.Assets;
 import com.rougeprogrammers.shootthecat.utils.Constants;
@@ -34,7 +36,7 @@ public class Main extends Game {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Constants.WIDTH, Constants.HEIGHT);
 		Gdx.app.log(TAG, "created");
-		setScreen(new RougesScreen(this, camera));
+		setScreen(new MenuScreen(this, camera));
 	}
 
 	/*

@@ -14,7 +14,7 @@ public abstract class Obstacle extends Model implements Disposable {
 
 	/** The Constant OBSTACLES_DENSITY. */
 	public static final float DENSITY = 0.6f;
-
+	
 	/**
 	 * Instantiates a new obstacle.
 	 *
@@ -29,8 +29,8 @@ public abstract class Obstacle extends Model implements Disposable {
 	 * @param gameStage
 	 *            the game stage
 	 */
-	public Obstacle(float x, float y, float width, float height, GameStage gameStage) {
-		super(x, y, width, height, gameStage);
+	public Obstacle(float x, float y, float width, float height, GameStage gameStage, int index) {
+		super(x, y, width, height, gameStage, index);
 	}
 
 	/**

@@ -61,7 +61,7 @@ public class Cannon extends SimpleModel {
 	public void explode(Cat cat) {
 		exploded = true;
 		fireSound.setVolume(fireSound.play(), 0.1f);
-		cat.shoot(new Vector2(MathUtils.random(100, 150), MathUtils.random(100, 200)), cat.getPosition().add(2, 2));
+		cat.shoot(new Vector2(MathUtils.random(1.0f, 1.5f), MathUtils.random(1.0f, 2.0f)), cat.getPosition().add(2, 2));
 		Gdx.app.log(TAG, "exploded");
 	}
 

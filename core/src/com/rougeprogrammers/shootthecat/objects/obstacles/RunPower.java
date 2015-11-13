@@ -11,8 +11,8 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.rougeprogrammers.shootthecat.Main;
 import com.rougeprogrammers.shootthecat.objects.Cat;
 import com.rougeprogrammers.shootthecat.objects.Ground;
-import com.rougeprogrammers.shootthecat.objects.models.ObjectType;
 import com.rougeprogrammers.shootthecat.objects.models.Obstacle;
+import com.rougeprogrammers.shootthecat.objects.models.ObjectType;
 import com.rougeprogrammers.shootthecat.stages.GameStage;
 import com.rougeprogrammers.shootthecat.utils.Constants;
 
@@ -42,8 +42,8 @@ public class RunPower extends Obstacle {
 	 * @param gameStage
 	 *            the game stage
 	 */
-	public RunPower(float x, GameStage gameStage) {
-		super(x, Y, WIDTH, HEIGHT, gameStage);
+	public RunPower(float x, GameStage gameStage, int index) {
+		super(x, Y, WIDTH, HEIGHT, gameStage, index);
 		textureRegion = Main.assets.getEnergyTextureRegion();
 	}
 
@@ -78,7 +78,7 @@ public class RunPower extends Obstacle {
 		shape.setRadius(getWidth() / 2 * Constants.WORLD_TO_BOX);
 		body.createFixture(shape, Obstacle.DENSITY);
 		shape.dispose();
-		body.setUserData(ObjectType.TNT);
+		body.setUserData(new ObjectType(ObjectType.Type.TNT, index));
 		return body;
 	}
 

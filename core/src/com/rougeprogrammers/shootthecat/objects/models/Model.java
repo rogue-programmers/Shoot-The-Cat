@@ -21,6 +21,8 @@ public abstract class Model extends Actor {
 
 	/** The body. */
 	protected Body body;
+	
+	public int index;
 
 	/**
 	 * Instantiates a new model.
@@ -36,11 +38,12 @@ public abstract class Model extends Actor {
 	 * @param gameStage
 	 *            the game stage
 	 */
-	public Model(float x, float y, float width, float height, GameStage gameStage) {
+	public Model(float x, float y, float width, float height, GameStage gameStage, int index) {
 		this.gameStage = gameStage;
 		setWidth(width);
 		setHeight(height);
 		setOrigin(width / 2, height / 2);
+		this.index = index;
 		body = createBody(x, y);
 		this.gameStage.addActor(this);
 		Gdx.app.log(TAG, "created");
